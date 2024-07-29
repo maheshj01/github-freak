@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import { Input } from "./_components/input";
 import { motion } from 'framer-motion';
+import { FaGithub } from "react-icons/fa";
 
 export default function Home() {
   const [username, setUsername] = useState('');
@@ -22,6 +23,10 @@ export default function Home() {
         transition={{ duration: 0.5 }}
       >
         <form onSubmit={handleSearch} className="w-full max-w-md px-4">
+          <div className="flex items-center justify-center mb-4">
+            <FaGithub className="text-6xl text-black" />
+            <p className='text-2xl mx-6'> Hello Freaks!</p>
+          </div>
           <Input
             placeholder="Enter your username"
             className="w-full px-4 py-2 text-gray-700 bg-white border rounded-lg focus:outline-none focus:border-blue-500"
@@ -36,7 +41,7 @@ export default function Home() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5 }}
-          className="container mx-auto px-4 py-8"
+          className="container mx-auto px-4 py-4"
         >
           <h2 className="text-2xl font-bold mb-4">GitHub Stats for {username}</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
