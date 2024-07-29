@@ -93,8 +93,7 @@ export default function App() {
           </div>
         </motion.div>
       )}
-      {!searchReady && (
-        // show loading that blinks
+      {!searchReady && hasSearched && (
 
         <motion.div
           initial={{ opacity: 0 }}
