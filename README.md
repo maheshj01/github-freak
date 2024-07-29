@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+### Github Freak
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Project for Github Freaks to view their Github stats and details. This project is built using ReactJS, Tailwind CSS, and Github API.
 
 ## Available Scripts
 
