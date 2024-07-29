@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import { gql } from '@apollo/client';
 import { FaGithub } from 'react-icons/fa';
-import { getCurrentDayOfYear } from '@/lib/utils';
+import { getCurrentDayOfYear } from '../../lib/utils';
 import { useDarkMode } from '../AppThemeProvider';
 
 const GET_USER_DATA = gql`
@@ -135,10 +135,10 @@ function GHContribution({ username, className }: { username: string, className?:
     }
 
     // if (loading) return <p className='text-black dark:text-white'>Loading...</p>;
-    if (error) return <p className='text-red-500 dark:text-red-400'>Error: {error.message}</p>;
+    // if (error) return <p className='text-red-500 dark:text-red-400'>Error: {error.message}</p>;
 
     var weeks = [];
-    if (loading) {
+    if (loading || error) {
         weeks = [...Array(53)];
     } else {
         weeks = data.user.contributionsCollection.contributionCalendar.weeks;
@@ -193,7 +193,7 @@ function GHContribution({ username, className }: { username: string, className?:
                         </div>
                         {(
                             <div className='flex gap-1 rounded-md p-2'>
-                                {!loading ? (
+                                {(!loading && !error) ? (
                                     weeks.map((week: any, weekIndex: number) => (
                                         <div key={weekIndex} className='flex flex-col gap-1'>
                                             {week.contributionDays.map((day: any, dayIndex: number) => (

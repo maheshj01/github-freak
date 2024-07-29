@@ -1,22 +1,46 @@
 "use client";
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaGithub } from "react-icons/fa";
 import { Input } from './app/_components/input';
+import GHContribution from './app/_components/GHContribution';
+import debounce from 'lodash/debounce';
 
 export default function App() {
   const [username, setUsername] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
   const [searchReady, setSearchReady] = useState(false);
-  const handleSearch = (e: React.FormEvent) => {
+
+  const debouncedSearch = useCallback(
+    debounce((searchTerm: string) => {
+      if (searchTerm) {
+        setHasSearched(true);
+        setSearchReady(false);
+        setTimeout(() => {
+          setSearchReady(true);
+        }, 1000);
+      }
+    }, 300),
+    []
+  );
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const searchTerm = e.target.value;
+    setUsername(searchTerm);
     setSearchReady(false);
+    if (hasSearched) {
+      debouncedSearch(searchTerm);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (username) {
       setHasSearched(true);
+      setSearchReady(false);
       setTimeout(() => {
         setSearchReady(true);
-      },
-        1000);
+      }, 1000);
     }
   };
 
@@ -27,7 +51,7 @@ export default function App() {
         animate={{ height: hasSearched ? '10rem' : '100vh' }}
         transition={{ duration: 0.5 }}
       >
-        <form onSubmit={handleSearch} className="w-full max-w-md px-4">
+        <form onSubmit={handleSubmit} className="w-full max-w-md px-4">
           <div className="flex items-center justify-center mb-4">
             <FaGithub className="text-6xl text-black" />
             <p className='text-2xl mx-6'> Hello Freaks!</p>
@@ -36,7 +60,7 @@ export default function App() {
             placeholder="Enter your username"
             className="w-full px-4 py-2 text-gray-700 bg-white border rounded-lg focus:outline-none focus:border-blue-500"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={handleInputChange}
           />
         </form>
       </motion.div>
@@ -49,9 +73,9 @@ export default function App() {
           className="container mx-auto px-4 py-4"
         >
           <h2 className="text-2xl font-bold mb-4">GitHub Stats for {username}</h2>
-          {/* <GHContribution
+          <GHContribution
             username={username}
-          /> */}
+          />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-white p-4 rounded-lg shadow">
               <h3 className="text-lg font-semibold mb-2">Commits</h3>
