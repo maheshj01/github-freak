@@ -10,32 +10,33 @@ export default function App() {
   const [username, setUsername] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
   const [searchReady, setSearchReady] = useState(false);
-
-  const debouncedSearch = useCallback(
-    debounce((searchTerm: string) => {
-      if (searchTerm) {
-        setHasSearched(true);
-        setSearchReady(false);
-        setTimeout(() => {
-          setSearchReady(true);
-        }, 1000);
-      }
-    }, 300),
-    []
-  );
+  const [searchValue, setSearchValue] = useState('');
+  // const debouncedSearch = useCallback(
+  //   debounce((searchTerm: string) => {
+  //     if (searchTerm) {
+  //       setHasSearched(true);
+  //       setSearchReady(false);
+  //       setTimeout(() => {
+  //         setSearchReady(true);
+  //       }, 1000);
+  //     }
+  //   }, 300),
+  //   []
+  // );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value;
-    setUsername(searchTerm);
-    setSearchReady(false);
-    if (hasSearched) {
-      debouncedSearch(searchTerm);
-    }
+    setSearchValue(searchTerm);
+    // setSearchReady(false);
+    // if (hasSearched) {
+    //   debouncedSearch(searchTerm);
+    // }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (username) {
+    if (searchValue) {
+      setUsername(searchValue);
       setHasSearched(true);
       setSearchReady(false);
       setTimeout(() => {
@@ -59,7 +60,7 @@ export default function App() {
           <Input
             placeholder="Enter your username"
             className="w-full px-4 py-2 text-gray-700 bg-white border rounded-lg focus:outline-none focus:border-blue-500"
-            value={username}
+            value={searchValue}
             onChange={handleInputChange}
           />
         </form>
