@@ -9,6 +9,7 @@ import React from 'react';
 import { useGitHubContributions } from './app/context/GHContext';
 import { getCurrentDayOfYear } from './lib/utils';
 import StreakCard from './app/_components/StreakCard';
+import Loading from './app/_components/Loading';
 
 interface GithubContribution {
   maxStreak: number;
@@ -18,6 +19,7 @@ interface GithubContribution {
 
 export default function App() {
   const [username, setUsername] = useState('');
+  // defines whether search bar has scrolled
   const [hasSearched, setHasSearched] = useState(false);
   const [searchReady, setSearchReady] = useState(false);
   const [searchValue, setSearchValue] = useState('');
@@ -30,12 +32,7 @@ export default function App() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value;
-    console.log("data=", data);
     setSearchValue(searchTerm);
-    // setSearchReady(false);
-    // if (hasSearched) {
-    //   debouncedSearch(searchTerm);
-    // }
   };
 
   useEffect(() => {
@@ -137,6 +134,7 @@ export default function App() {
               error={error}
             />
             <StreakCard
+              isCurrentYear={currentYear === graphYear}
               currentStreak={contributionStats?.currentStreak}
               maxStreak={contributionStats?.maxStreak}
               totalContributions={contributionStats?.totalContributions}
@@ -159,17 +157,7 @@ export default function App() {
         </motion.div>
       )}
       {!searchReady && hasSearched && (
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="container mx-auto px-4 py-4"
-        >
-          <div className="flex items-center justify-center h-3/4">
-            <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900"></div>
-          </div>
-        </motion.div>
+        <Loading />
       )}
     </div>
   );
