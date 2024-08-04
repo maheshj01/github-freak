@@ -1,16 +1,19 @@
 "use client";
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaGithub } from "react-icons/fa";
 import { Input } from './app/_components/input';
 import GHContribution from './app/_components/GHContribution';
-import debounce from 'lodash/debounce';
+import { DropdownMenuButton } from './app/_components/dropdown';
+import React from 'react';
 
 export default function App() {
   const [username, setUsername] = useState('');
   const [hasSearched, setHasSearched] = useState(false);
   const [searchReady, setSearchReady] = useState(false);
   const [searchValue, setSearchValue] = useState('');
+  const currentYear = new Date().getFullYear();
+  const [graphYear, setGraphYear] = React.useState<number>(currentYear);
   // const debouncedSearch = useCallback(
   //   debounce((searchTerm: string) => {
   //     if (searchTerm) {
@@ -73,10 +76,24 @@ export default function App() {
           transition={{ delay: 0.5 }}
           className="container mx-auto px-4 py-4"
         >
-          <h2 className="text-2xl font-bold mb-4">GitHub Stats for {username}</h2>
-          <GHContribution
-            username={username}
-          />
+          <div className='flex space-x-2 items-center mb-2'>
+            <p className="text-2xl font-bold">GitHub Stats for {username}</p>
+            <DropdownMenuButton
+              onClick={setGraphYear}
+              className='text-md md:text-2xl sm:text-xl font-bold'
+              options={[currentYear, currentYear - 1, currentYear - 2, currentYear - 3, currentYear - 4]}
+              selected={graphYear.toString()}
+            />
+          </div>
+          <div className='flex flex-col md:flex-row md:space-x-2 sm:space-y-2'>
+            <GHContribution
+              username={username}
+              graphYear={graphYear}
+            />
+            <div className='flex justify-center items-center bg-primary-foreground md:flex-grow'>
+              Streak
+            </div>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-white p-4 rounded-lg shadow">
               <h3 className="text-lg font-semibold mb-2">Commits</h3>

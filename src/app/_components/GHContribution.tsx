@@ -1,36 +1,7 @@
 import React, { useEffect } from 'react';
-import { useQuery } from '@apollo/client';
-import { gql } from '@apollo/client';
-import { FaGithub } from 'react-icons/fa';
 import { getCurrentDayOfYear } from '../../lib/utils';
 import { useDarkMode } from '../AppThemeProvider';
-
-const GET_USER_DATA = gql`
-  query GetUserData($login: String!, $from: DateTime!, $to: DateTime!) {
-    user(login: $login) {
-      email
-      createdAt
-      contributionsCollection(from: $from, to: $to) {
-        contributionCalendar {
-          totalContributions
-          weeks {
-            contributionDays {
-              weekday
-              date
-              contributionCount
-              color
-            }
-          }
-          months {
-            name
-            year
-            firstDay
-            totalWeeks
-          }
-        }
-      }
-    }
-  }`;
+import { useGitHubContributions } from '../services/ApolloClient';
 
 interface GithubContribution {
     maxStreak: number;
@@ -38,29 +9,21 @@ interface GithubContribution {
     totalContributions: number;
 }
 
-function GHContribution({ username, className }: { username: string, className?: string }) {
+function GHContribution({ username, className, graphYear }: { username: string, className?: string, graphYear: number }) {
     const { darkMode } = useDarkMode();
     // Calculate the date range for the current year
     const currentYear = new Date().getFullYear();
-    const [graphYear, setGraphYear] = React.useState<number>(currentYear);
     const fromDate = new Date(graphYear, 0, 1);
     const toDate = new Date(graphYear, 11, 31);
     const [contributionStats, setContributionStats] = React.useState<GithubContribution | null>(null);
-
-    const { loading, error, data } = useQuery(GET_USER_DATA, {
-        variables: {
-            login: username,
-            from: fromDate.toISOString(),
-            to: toDate.toISOString()
-        }
-    });
+    const { loading, error, data } = useGitHubContributions(username, fromDate, toDate);
 
     useEffect(() => {
         if (data && data.user) {
             const weeks = data.user.contributionsCollection.contributionCalendar.weeks;
             getContributionStats(weeks);
         }
-    }, [data]);
+    }, [data, graphYear]);
 
     const getContributionStats = (weeks: any) => {
         const dayoftheYear = getCurrentDayOfYear();
@@ -156,12 +119,6 @@ function GHContribution({ username, className }: { username: string, className?:
                             <p className={`text-md md:text-2xl sm:text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
                                 Github Contributions
                             </p>
-                            {/* <DropdownMenuButton
-                                onClick={setGraphYear}
-                                className='text-md md:text-2xl sm:text-xl font-bold'
-                                options={[currentYear, currentYear - 1, currentYear - 2, currentYear - 3, currentYear - 4]}
-                                selected={graphYear.toString()}
-                            /> */}
                         </div>
                         {/* <Stats label='Total Contributions' value={loading ? '' : contributionStats?.totalContributions.toString()} /> */}
                     </div>
