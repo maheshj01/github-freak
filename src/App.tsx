@@ -1,11 +1,20 @@
 "use client";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { FaGithub } from "react-icons/fa";
 import { Input } from './app/_components/input';
 import GHContribution from './app/_components/GHContribution';
 import { DropdownMenuButton } from './app/_components/dropdown';
 import React from 'react';
+import { useGitHubContributions } from './app/context/GHContext';
+import { getCurrentDayOfYear } from './lib/utils';
+import StreakCard from './app/_components/StreakCard';
+
+interface GithubContribution {
+  maxStreak: number;
+  currentStreak: number;
+  totalContributions: number;
+}
 
 export default function App() {
   const [username, setUsername] = useState('');
@@ -14,27 +23,62 @@ export default function App() {
   const [searchValue, setSearchValue] = useState('');
   const currentYear = new Date().getFullYear();
   const [graphYear, setGraphYear] = React.useState<number>(currentYear);
-  // const debouncedSearch = useCallback(
-  //   debounce((searchTerm: string) => {
-  //     if (searchTerm) {
-  //       setHasSearched(true);
-  //       setSearchReady(false);
-  //       setTimeout(() => {
-  //         setSearchReady(true);
-  //       }, 1000);
-  //     }
-  //   }, 300),
-  //   []
-  // );
+  const fromDate = new Date(graphYear, 0, 1);
+  const toDate = new Date(graphYear, 11, 31);
+  const [contributionStats, setContributionStats] = React.useState<GithubContribution | null>(null);
+  const { loading, error, data } = useGitHubContributions(username, fromDate, toDate);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const searchTerm = e.target.value;
+    console.log("data=", data);
     setSearchValue(searchTerm);
     // setSearchReady(false);
     // if (hasSearched) {
     //   debouncedSearch(searchTerm);
     // }
   };
+
+  useEffect(() => {
+    if (data && data.user) {
+      const weeks = data.user.contributionsCollection.contributionCalendar.weeks;
+      getContributionStats(weeks);
+    }
+  }, [data]);
+
+  const getContributionStats = (weeks: any) => {
+    const dayoftheYear = getCurrentDayOfYear();
+    let totalContributions = 0;
+    let maxStreak = 0;
+    let currentStreak = 0;
+    let currentStreakEnd = 0;
+    var count = 0
+    weeks.forEach((week: any) => {
+      week.contributionDays.forEach((day: any) => {
+        totalContributions += day.contributionCount;
+        if (count <= dayoftheYear) {
+          if (day.contributionCount > 0) {
+            currentStreakEnd += 1;
+            if (currentStreakEnd > maxStreak) {
+              maxStreak = currentStreakEnd;
+            }
+          } else {
+            currentStreak = currentStreakEnd;
+            currentStreakEnd = 0;
+          }
+        }
+        count += 1;
+      });
+    });
+    if (currentYear !== graphYear) {
+      currentStreak = 0;
+    }
+
+    setContributionStats({
+      maxStreak: maxStreak,
+      currentStreak: currentStreak,
+      totalContributions: totalContributions
+    });
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,16 +129,20 @@ export default function App() {
               selected={graphYear.toString()}
             />
           </div>
-          <div className='flex flex-col md:flex-row md:space-x-2 sm:space-y-2'>
+          <div className='flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0'>
             <GHContribution
               username={username}
-              graphYear={graphYear}
+              data={data}
+              loading={loading}
+              error={error}
             />
-            <div className='flex justify-center items-center bg-primary-foreground md:flex-grow'>
-              Streak
-            </div>
+            <StreakCard
+              currentStreak={contributionStats?.currentStreak}
+              maxStreak={contributionStats?.maxStreak}
+              totalContributions={contributionStats?.totalContributions}
+            />
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             <div className="bg-white p-4 rounded-lg shadow">
               <h3 className="text-lg font-semibold mb-2">Commits</h3>
               <div className="h-64 bg-gray-200 rounded flex items-center justify-center">

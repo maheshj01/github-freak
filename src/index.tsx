@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ApolloProvider } from '@apollo/client';
-import { AppThemeProvider } from './app/AppThemeProvider';
+import { AppThemeProvider } from './app/context/AppThemeProvider';
 import { client } from './app/services/ApolloClient';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

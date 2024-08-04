@@ -10,7 +10,7 @@ import {
 } from "./dropdown-menu";
 
 import { IoIosArrowDown } from "react-icons/io";
-import { useDarkMode } from "../AppThemeProvider";
+import { useDarkMode } from "../context/AppThemeProvider";
 
 export function DropdownMenuButton({ options, selected, onClick, className }: { className: string, options: number[], selected: string, onClick: (value: number) => void }) {
     return (

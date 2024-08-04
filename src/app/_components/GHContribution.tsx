@@ -1,64 +1,7 @@
-import React, { useEffect } from 'react';
-import { getCurrentDayOfYear } from '../../lib/utils';
-import { useDarkMode } from '../AppThemeProvider';
-import { useGitHubContributions } from '../services/ApolloClient';
+import { useDarkMode } from '../context/AppThemeProvider';
 
-interface GithubContribution {
-    maxStreak: number;
-    currentStreak: number;
-    totalContributions: number;
-}
-
-function GHContribution({ username, className, graphYear }: { username: string, className?: string, graphYear: number }) {
+function GHContribution({ username, className, data, loading, error }: { username: string, className?: string, data: any, loading: boolean, error: any }) {
     const { darkMode } = useDarkMode();
-    // Calculate the date range for the current year
-    const currentYear = new Date().getFullYear();
-    const fromDate = new Date(graphYear, 0, 1);
-    const toDate = new Date(graphYear, 11, 31);
-    const [contributionStats, setContributionStats] = React.useState<GithubContribution | null>(null);
-    const { loading, error, data } = useGitHubContributions(username, fromDate, toDate);
-
-    useEffect(() => {
-        if (data && data.user) {
-            const weeks = data.user.contributionsCollection.contributionCalendar.weeks;
-            getContributionStats(weeks);
-        }
-    }, [data, graphYear]);
-
-    const getContributionStats = (weeks: any) => {
-        const dayoftheYear = getCurrentDayOfYear();
-        let totalContributions = 0;
-        let maxStreak = 0;
-        let currentStreak = 0;
-        let currentStreakEnd = 0;
-        var count = 0
-        weeks.forEach((week: any) => {
-            week.contributionDays.forEach((day: any) => {
-                totalContributions += day.contributionCount;
-                if (count <= dayoftheYear) {
-                    if (day.contributionCount > 0) {
-                        currentStreakEnd += 1;
-                        if (currentStreakEnd > maxStreak) {
-                            maxStreak = currentStreakEnd;
-                        }
-                    } else {
-                        currentStreak = currentStreakEnd;
-                        currentStreakEnd = 0;
-                    }
-                }
-                count += 1;
-            });
-        });
-        if (currentYear !== graphYear) {
-            currentStreak = 0;
-        }
-
-        setContributionStats({
-            maxStreak: maxStreak,
-            currentStreak: currentStreak,
-            totalContributions: totalContributions
-        });
-    }
 
     const styles = {
         dark: {
@@ -122,12 +65,12 @@ function GHContribution({ username, className, graphYear }: { username: string, 
                         </div>
                         {/* <Stats label='Total Contributions' value={loading ? '' : contributionStats?.totalContributions.toString()} /> */}
                     </div>
-                    <div className='flex flex-col mx-2'>
+                    {/* <div className='flex flex-col mx-2'>
                         {(currentYear === graphYear) && < Stats label='Current Streak' value={loading ? '' : contributionStats?.currentStreak.toString()} />}
 
                         <Stats label='Max Streak' value={loading ? '' : contributionStats?.maxStreak.toString()} />
                         <Stats label='total Contributions' value={loading ? '' : contributionStats?.totalContributions.toString()} />
-                    </div>
+                    </div> */}
                 </div>
             </div>
             <div className='flex items-center'>
