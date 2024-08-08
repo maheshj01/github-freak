@@ -1,11 +1,28 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { ApolloProvider } from '@apollo/client';
 import { AppThemeProvider } from './app/context/AppThemeProvider';
 import { client } from './app/services/ApolloClient';
+import { RouterProvider, createBrowserRouter } from 'react-router-dom';
+import ErrorRoute from './error';
+import GHStats from './app/routes/GHStats';
+import App from './app/routes/App';
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+    errorElement: <ErrorRoute />
+  },
+  {
+    path: "/:username",
+    element: <GHStats />,
+    errorElement: <ErrorRoute />
+  },
+]);
+
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
@@ -13,7 +30,7 @@ root.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
       <AppThemeProvider>
-        <App />
+        <RouterProvider router={router} />
       </AppThemeProvider>
     </ApolloProvider>
   </React.StrictMode>
