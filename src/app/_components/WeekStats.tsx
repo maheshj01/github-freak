@@ -9,13 +9,12 @@ export default function DailyContributionChart({ data }: WeeklyChartProps) {
     const [weekValues, setWeekValues] = useState([0, 0, 0, 0, 0, 0, 0]);
     const weekLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     var weeks: any;
-    if (data && data.user) {
-        weeks = data.user.contributionsCollection.contributionCalendar.weeks;
-    } else {
-        weeks = []
-    }
-
     const getContributionStats = (weeks: any) => {
+        if (!data || !data.user) {
+            return
+        } else {
+            weeks = data.user.contributionsCollection.contributionCalendar.weeks;
+        }
         const newWeekValues = [0, 0, 0, 0, 0, 0, 0];
         weeks.forEach((week: any) => {
             week.contributionDays.forEach((day: any) => {
@@ -27,7 +26,7 @@ export default function DailyContributionChart({ data }: WeeklyChartProps) {
 
     useEffect(() => {
         getContributionStats(weeks);
-    }, [weeks]);
+    }, [data]);
 
     return (
         <div className="bg-white p-4 rounded-lg shadow">
@@ -40,7 +39,7 @@ export default function DailyContributionChart({ data }: WeeklyChartProps) {
                     height={290}
                     barLabel="value"
                     xAxis={[{ data: weekLabels, scaleType: 'band' }]}
-                    margin={{ top: 20, bottom: 30, left: 40, right: 10 }}
+                    margin={{ top: 20, bottom: 40, left: 40, right: 10 }}
                 />
             </div>
         </div>

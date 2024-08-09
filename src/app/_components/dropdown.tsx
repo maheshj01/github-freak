@@ -25,7 +25,7 @@ export function DropdownMenuButton({ options, selected, onClick, className }: { 
                     options.map((option) => {
                         return (
                             <DropdownMenuItem
-                                className={`cursor-pointer dark:text-white flex text-lg  ${selected == option.toString() ? 'bg-gray-200 hover:bg-gray-200 dark:text-black hover:dark:bg-gray-100' : 'hover:bg-gray-200'}`}
+                                className={`cursor-pointer flex text-lg  ${selected == option.toString() ? 'bg-gray-200 hover:bg-gray-200' : 'hover:bg-gray-200'}`}
                                 key={option}
                                 onClick={onClick.bind(null, option)}
                             > {option}</DropdownMenuItem>

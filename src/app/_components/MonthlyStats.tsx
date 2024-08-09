@@ -12,7 +12,9 @@ export default function MonthlyContributionChart({ data, year }: MonthlyContribu
 
     const getMonthlyContributionStats = (contributionCalendar: any) => {
         const newMonthlyValues = new Array(12).fill(0);
-
+        if (!contributionCalendar) {
+            return;
+        }
         contributionCalendar.weeks.forEach((week: any) => {
             week.contributionDays.forEach((day: any) => {
                 const date = new Date(day.date);
@@ -32,9 +34,7 @@ export default function MonthlyContributionChart({ data, year }: MonthlyContribu
         }
     }, [data, year]);
 
-    if (!data?.user?.contributionsCollection?.contributionCalendar) {
-        return <div>No data available</div>;
-    }
+   
 
     return (
         <div className="bg-white p-4 rounded-lg shadow">
@@ -55,7 +55,7 @@ export default function MonthlyContributionChart({ data, year }: MonthlyContribu
                             fontSize: 12,
                         }
                     }]}
-                    margin={{ top: 20, bottom: 70, left: 40, right: 10 }}
+                    margin={{ top: 20, bottom: 40, left: 40, right: 10 }}
                 />
             </div>
         </div>
