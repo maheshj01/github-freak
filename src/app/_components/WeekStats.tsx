@@ -8,7 +8,12 @@ interface WeeklyChartProps {
 export default function DailyContributionChart({ data }: WeeklyChartProps) {
     const [weekValues, setWeekValues] = useState([0, 0, 0, 0, 0, 0, 0]);
     const weekLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    const weeks = data.user.contributionsCollection.contributionCalendar.weeks;
+    var weeks: any;
+    if (data && data.user) {
+        weeks = data.user.contributionsCollection.contributionCalendar.weeks;
+    } else {
+        weeks = []
+    }
 
     const getContributionStats = (weeks: any) => {
         const newWeekValues = [0, 0, 0, 0, 0, 0, 0];

@@ -17,7 +17,7 @@ export function DropdownMenuButton({ options, selected, onClick, className }: { 
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
                 <div className="flex items-center mb-1">
-                    <p className={`text-blue-700 dark:text-white font-bold flex justify-center text-center ${className}`}> {selected}</p> <IoIosArrowDown className="w-4 h-4 dark:text-white" />
+                    <p className={`text-blue-700 font-bold flex justify-center text-center ${className}`}> {selected}</p> <IoIosArrowDown className="w-4 h-4" />
                 </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-2">
