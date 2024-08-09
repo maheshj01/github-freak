@@ -10,6 +10,7 @@ import StreakCard from '../_components/StreakCard';
 import Loading from '../_components/Loading';
 import { useGitHubContributions } from '../context/GHContext';
 import { getCurrentDayOfYear } from '../../lib/utils';
+import WeeklyChart from '../_components/WeekStats';
 
 interface GithubContribution {
     maxStreak: number;
@@ -155,12 +156,7 @@ export default function GHStats() {
                         />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                        <div className="bg-white p-4 rounded-lg shadow">
-                            <h3 className="text-lg font-semibold mb-2">Commits</h3>
-                            <div className="h-64 bg-gray-200 rounded flex items-center justify-center">
-                                Dummy Commit Graph
-                            </div>
-                        </div>
+                        <WeeklyChart data={data} />
                         <div className="bg-white p-4 rounded-lg shadow">
                             <h3 className="text-lg font-semibold mb-2">Languages</h3>
                             <div className="h-64 bg-gray-200 rounded flex items-center justify-center">
