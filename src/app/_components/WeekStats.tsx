@@ -1,13 +1,19 @@
-import { BarChart } from '@mui/x-charts/BarChart';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import { useEffect, useState } from 'react';
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "./chart";
 
 interface WeeklyChartProps {
     data: any;
 }
 
 export default function DailyContributionChart({ data }: WeeklyChartProps) {
-    const [weekValues, setWeekValues] = useState([0, 0, 0, 0, 0, 0, 0]);
     const weekLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+    const [chartData, setChartData] = useState(() =>
+        weekLabels.map(week => (
+            { week: week, value: 0 }
+        ))
+    );
     var weeks: any;
     const getContributionStats = (weeks: any) => {
         if (!data || !data.user) {
@@ -15,24 +21,59 @@ export default function DailyContributionChart({ data }: WeeklyChartProps) {
         } else {
             weeks = data.user.contributionsCollection.contributionCalendar.weeks;
         }
-        const newWeekValues = [0, 0, 0, 0, 0, 0, 0];
+
+        const newWeekValues = weekLabels.map(week => (
+            { week: week, value: 0 }
+        ));
+
         weeks.forEach((week: any) => {
             week.contributionDays.forEach((day: any) => {
-                newWeekValues[day.weekday] += day.contributionCount;
+                newWeekValues[day.weekday]['value'] += day.contributionCount;
             });
         });
-        setWeekValues(newWeekValues);
+        setChartData(newWeekValues);
     }
 
     useEffect(() => {
         getContributionStats(weeks);
     }, [data]);
 
+    const chartConfig = {
+        "week": {
+            color: "var(--color-foreground)",
+        }
+
+    } satisfies ChartConfig
+
     return (
-        <div className="bg-white p-4 rounded-lg shadow">
-            <h3 className="text-lg font-semibold mb-2">Daily Contributions</h3>
+        <div className="bg-white p-4 pb-6 rounded-lg shadow">
+            <h3 className="text-lg font-semibold mb-4">Daily Contributions</h3>
             <div className="h-64 rounded flex items-center justify-center">
-                <BarChart
+                <ChartContainer config={chartConfig} className="h-[300px] w-full">
+                    <BarChart accessibilityLayer data={chartData}>
+                        <CartesianGrid vertical={false} />
+                        <XAxis
+                            dataKey="week"
+                            tickLine={false}
+                            tickMargin={10}
+                            axisLine={false}
+                            tickFormatter={(value) => value.slice(0, 3)}
+                        />
+                        <YAxis
+                            tickLine={false}
+                            tickMargin={10}
+                            axisLine={false}
+                            tickCount={5}
+                            tickFormatter={(value) => value + ""}
+                        />
+                        <ChartTooltip content={<ChartTooltipContent />} />
+                        <Bar
+                            label={true}
+                            dataKey='value' fill="var(--color-background)" radius={4} />
+                    </BarChart>
+                </ChartContainer>
+
+                {/* <BarChart
                     series={[
                         { data: weekValues },
                     ]}
@@ -40,7 +81,7 @@ export default function DailyContributionChart({ data }: WeeklyChartProps) {
                     barLabel="value"
                     xAxis={[{ data: weekLabels, scaleType: 'band' }]}
                     margin={{ top: 20, bottom: 40, left: 40, right: 10 }}
-                />
+                /> */}
             </div>
         </div>
     );

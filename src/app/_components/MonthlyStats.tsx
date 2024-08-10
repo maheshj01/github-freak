@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { BarChart } from '@mui/x-charts/BarChart';
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from './chart';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 
 interface MonthlyContributionChartProps {
     data: any;
@@ -7,11 +8,22 @@ interface MonthlyContributionChartProps {
 }
 
 export default function MonthlyContributionChart({ data, year }: MonthlyContributionChartProps) {
-    const [monthlyValues, setMonthlyValues] = useState<number[]>(new Array(12).fill(0));
     const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
+    const [chartData, setChartData] = useState(() =>
+        monthLabels.map(label => ({ month: label, value: 0 }))
+    );
+
+    const chartConfig = {
+        "week": {
+            color: "var(--color-foreground)",
+        }
+
+    } satisfies ChartConfig
+
     const getMonthlyContributionStats = (contributionCalendar: any) => {
-        const newMonthlyValues = new Array(12).fill(0);
+        const newMonthlyValues = monthLabels.map(label => ({ month: label, value: 0 }))
+
         if (!contributionCalendar) {
             return;
         }
@@ -20,13 +32,14 @@ export default function MonthlyContributionChart({ data, year }: MonthlyContribu
                 const date = new Date(day.date);
                 if (date.getFullYear() === year) {
                     const monthIndex = date.getMonth();
-                    newMonthlyValues[monthIndex] += day.contributionCount;
+                    newMonthlyValues[monthIndex]['value'] += day.contributionCount;
                 }
             });
         });
 
-        setMonthlyValues(newMonthlyValues);
+        setChartData(newMonthlyValues);
     };
+
 
     useEffect(() => {
         if (data?.user?.contributionsCollection?.contributionCalendar) {
@@ -34,13 +47,34 @@ export default function MonthlyContributionChart({ data, year }: MonthlyContribu
         }
     }, [data, year]);
 
-   
-
     return (
-        <div className="bg-white p-4 rounded-lg shadow">
-            <h3 className="text-lg font-semibold mb-2">Monthly Contributions {year}</h3>
+        <div className="bg-white p-4 pb-6 rounded-lg shadow">
+            <h3 className="text-lg font-semibold mb-4">Monthly Contributions {year}</h3>
             <div className="h-64 rounded flex items-center justify-center">
-                <BarChart
+                <ChartContainer config={chartConfig} className="h-[300px] w-full">
+                    <BarChart accessibilityLayer data={chartData}>
+                        <CartesianGrid vertical={false} />
+                        <XAxis
+                            dataKey="month"
+                            tickLine={false}
+                            tickMargin={10}
+                            axisLine={false}
+                            tickFormatter={(value) => value.slice(0, 3)}
+                        />
+                        <YAxis
+                            tickLine={false}
+                            tickMargin={10}
+                            axisLine={false}
+                            tickCount={5}
+                            tickFormatter={(value) => value + ""}
+                        />
+                        <ChartTooltip content={<ChartTooltipContent />} />
+                        <Bar
+                            label={true}
+                            dataKey='value' fill="var(--color-background)" radius={4} />
+                    </BarChart>
+                </ChartContainer>
+                {/* <BarChart
                     series={[
                         { data: monthlyValues },
                     ]}
@@ -56,7 +90,7 @@ export default function MonthlyContributionChart({ data, year }: MonthlyContribu
                         }
                     }]}
                     margin={{ top: 20, bottom: 40, left: 40, right: 10 }}
-                />
+                /> */}
             </div>
         </div>
     );

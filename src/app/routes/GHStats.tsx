@@ -12,12 +12,28 @@ import { useGitHubContributions } from '../context/GHContext';
 import { getCurrentDayOfYear } from '../../lib/utils';
 import WeeklyChart from '../_components/WeekStats';
 import MonthlyContributionChart from '../_components/MonthlyStats';
+import GHProfileCard from '../_components/GHProfileCard';
 
 interface GithubContribution {
     maxStreak: number;
     currentStreak: number;
     totalContributions: number;
 }
+
+interface GitHubUser {
+    login: string;
+    avatar_url: string;
+    name: string;
+    bio: string;
+    location: string;
+    blog: string;
+    twitter_username: string;
+    public_repos: number;
+    followers: number;
+    following: number;
+    created_at: string;
+}
+
 export default function GHStats() {
     const { username } = useParams();
     // defines whether search bar has scrolled
@@ -29,6 +45,7 @@ export default function GHStats() {
     const fromDate = new Date(graphYear, 0, 1);
     const toDate = new Date(graphYear, 11, 31);
     const [contributionStats, setContributionStats] = React.useState<GithubContribution | null>(null);
+    const [user, setUser] = useState<GitHubUser | null>(null);
     const { loading, error, data } = useGitHubContributions(searchUsername, fromDate, toDate);
     const navigate = useNavigate();
 
@@ -40,6 +57,28 @@ export default function GHStats() {
             triggerSearch(username);
         }
     }, [username]);
+
+
+    const fetchUserData = async () => {
+        const token = process.env.REACT_APP_GITHUB_TOKEN;
+
+        try {
+            const response = await fetch(`https://api.github.com/users/${searchUsername}`, {
+                headers: {
+                    'Authorization': `Basic ${btoa(token + ':x-oauth-basic')}`,
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to fetch user data');
+            }
+
+            const userData: GitHubUser = await response.json();
+            setUser(userData);
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     const triggerSearch = (searchUsername: string) => {
         console.log("search triggered");
@@ -57,6 +96,7 @@ export default function GHStats() {
         if (inputUsername) {
             setSearchUsername(inputUsername);
             triggerSearch(inputUsername);
+            fetchUserData();
         }
     };
     useEffect(() => {
@@ -125,7 +165,7 @@ export default function GHStats() {
                     />
                 </form>
             </motion.div>
-
+            {/* {user && <GHProfileCard user={user} />} */}
             {searchReady && (
                 <motion.div
                     initial={{ opacity: 0 }}
