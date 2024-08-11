@@ -13,7 +13,7 @@ import { getCurrentDayOfYear } from '../../lib/utils';
 import WeeklyChart from '../_components/WeekStats';
 import MonthlyContributionChart from '../_components/MonthlyStats';
 import GHProfileCard from '../_components/GHProfileCard';
-import TopLanguages from '../_components/TopLanguages';
+import { useGitHubUser } from '../hooks/GithubUser';
 
 interface GithubContribution {
     maxStreak: number;
@@ -46,7 +46,7 @@ export default function GHStats() {
     const fromDate = new Date(graphYear, 0, 1);
     const toDate = new Date(graphYear, 11, 31);
     const [contributionStats, setContributionStats] = React.useState<GithubContribution | null>(null);
-    const [user, setUser] = useState<GitHubUser | null>(null);
+    const { user, loading: userLoading, error: userError } = useGitHubUser(searchUsername);
     const { loading, error, data } = useGitHubContributions(searchUsername, fromDate, toDate);
     const navigate = useNavigate();
 
@@ -58,31 +58,8 @@ export default function GHStats() {
         }
     }, [username]);
 
-
-    const fetchUserData = async (uname: string) => {
-        const token = process.env.REACT_APP_GITHUB_TOKEN;
-
-        try {
-            const response = await fetch(process.env.REACT_APP_GITHUB_USER_API + `/${uname}`, {
-                headers: {
-                    'Authorization': `Basic ${btoa(token + ':x-oauth-basic')}`,
-                },
-            });
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch user data');
-            }
-
-            const userData: GitHubUser = await response.json();
-            setUser(userData);
-        } catch (err) {
-            console.log(err);
-        }
-    };
-
     const triggerSearch = (searchUsername: string) => {
         setSearchReady(false);
-        fetchUserData(searchUsername)
         setTimeout(() => {
             setSearchReady(true);
         }, 1000);
@@ -93,7 +70,7 @@ export default function GHStats() {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (inputUsername) {
+        if (inputUsername !== searchUsername) {
             setSearchUsername(inputUsername);
             triggerSearch(inputUsername);
         }
@@ -174,7 +151,7 @@ export default function GHStats() {
                         {user && <GHProfileCard user={user} />}
                     </div>
                     <div className='flex space-x-2 py-2 mt-6 items-center'>
-                        {user && <p className="text-2xl font-bold">GitHub Stats for {user.name}</p>}
+                        {user && <p className="text-2xl font-bold">GitHub Stats</p>}
                         <DropdownMenuButton
                             onClick={setGraphYear}
                             className='text-md md:text-2xl text-2xl font-bold'

@@ -15,8 +15,8 @@ export default function MonthlyContributionChart({ data, year }: MonthlyContribu
     );
 
     const chartConfig = {
-        "week": {
-            color: "var(--color-foreground)",
+        "month": {
+            color: "#4a81f0",
         }
 
     } satisfies ChartConfig
@@ -71,7 +71,7 @@ export default function MonthlyContributionChart({ data, year }: MonthlyContribu
                         <ChartTooltip content={<ChartTooltipContent />} />
                         <Bar
                             label={true}
-                            dataKey='value' fill="var(--color-background)" radius={4} />
+                            dataKey='value' fill="var(--color-month)" radius={4} />
                     </BarChart>
                 </ChartContainer>
                 {/* <BarChart

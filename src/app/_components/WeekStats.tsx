@@ -41,7 +41,7 @@ export default function DailyContributionChart({ data, year }: WeeklyChartProps)
 
     const chartConfig = {
         "week": {
-            color: "#2536eb",
+            color: "#4a81f0",
         }
 
     } satisfies ChartConfig
@@ -70,7 +70,7 @@ export default function DailyContributionChart({ data, year }: WeeklyChartProps)
                         <ChartTooltip content={<ChartTooltipContent />} />
                         <Bar
                             label={true}
-                            dataKey='value' fill="#236eb" radius={4} />
+                            dataKey='value' fill="var(--color-week)" radius={4} />
                     </BarChart>
                 </ChartContainer>
 
