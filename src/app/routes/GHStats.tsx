@@ -144,7 +144,7 @@ export default function GHStats() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100">
+        <div className="min-h-screen bg-slate-50">
             <motion.div
                 className={`flex flex-col items-center justify-center h-40`}
                 animate={{ height: '10rem' }}
@@ -177,7 +177,7 @@ export default function GHStats() {
                         {user && <p className="text-2xl font-bold">GitHub Stats for {user.name}</p>}
                         <DropdownMenuButton
                             onClick={setGraphYear}
-                            className='text-md md:text-2xl sm:text-xl font-bold'
+                            className='text-md md:text-2xl text-2xl font-bold'
                             options={[currentYear, currentYear - 1, currentYear - 2, currentYear - 3, currentYear - 4]}
                             selected={graphYear.toString()}
                         />

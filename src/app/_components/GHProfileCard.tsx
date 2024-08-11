@@ -26,7 +26,7 @@ const GHProfileCard: React.FC<GHProfileCardProps> = ({ user }) => {
     };
 
     return (
-        <div className="w-full bg-white shadow-xl rounded-lg overflow-hidden">
+        <div className="w-full bg-white shadow-md rounded-lg overflow-hidden">
             <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-4">
                 <div className="flex items-center">
                     <img
