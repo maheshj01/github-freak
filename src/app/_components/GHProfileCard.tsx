@@ -1,5 +1,7 @@
 import React from 'react';
 import TopLanguages from './TopLanguages';
+import { FaGithub, FaLink, FaShare } from 'react-icons/fa';
+import IconButton from './IconButton';
 
 interface GitHubUser {
     login: string;
@@ -28,15 +30,23 @@ const GHProfileCard: React.FC<GHProfileCardProps> = ({ user }) => {
     return (
         <div className="w-full bg-white shadow-md rounded-lg overflow-hidden">
             <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-4">
-                <div className="flex items-center">
-                    <img
-                        src={user.avatar_url}
-                        alt={user.name}
-                        className="w-24 h-24 rounded-full border-4 border-white shadow-lg"
-                    />
-                    <div className="ml-4">
-                        <h1 className="text-2xl font-bold text-white">{user.name}</h1>
-                        <p className="text-white opacity-90">@{user.login}</p>
+                <div className="flex justify-between">
+                    <div className="flex items-center">
+                        <img
+                            src={user.avatar_url}
+                            alt={user.name}
+                            className="w-24 h-24 rounded-full border-4 border-white shadow-lg"
+                        />
+                        <div className="ml-4">
+                            <h1 className="text-2xl font-bold text-white">{user.name}</h1>
+                            <p className="text-white opacity-90">@{user.login}</p>
+                        </div>
+                    </div>
+                    <div className='flex'>
+                        <IconButton ariaLabel='Github' className='bg-transparent rounded-full p-2 dark:text-white'>
+                            <FaShare className="text-2xl text-white" />
+                        </IconButton>
+
                     </div>
                 </div>
             </div>
