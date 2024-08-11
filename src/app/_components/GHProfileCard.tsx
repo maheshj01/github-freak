@@ -43,7 +43,9 @@ const GHProfileCard: React.FC<GHProfileCardProps> = ({ user }) => {
                         </div>
                     </div>
                     <div className='flex'>
-                        <IconButton ariaLabel='Github' className='bg-transparent rounded-full p-2 dark:text-white'>
+                        <IconButton ariaLabel='Github' className='bg-transparent rounded-full p-2 dark:text-white' onClick={() => {
+                            window.open(process.env.REACT_APP_GITHUB_BASE_URL + `/${user.login}`, '_blank');
+                        }}>
                             <FaShare className="text-2xl text-white" />
                         </IconButton>
 
