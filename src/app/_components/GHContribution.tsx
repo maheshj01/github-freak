@@ -60,7 +60,7 @@ function GHContribution({ username, className, data, loading, error }: { usernam
                     <div className='flex flex-col'>
                         <div className='flex space-x-2'>
                             <p className={`text-md md:text-2xl sm:text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-                                Github Contributions
+                                Contribution Chart
                             </p>
                         </div>
                         {/* <Stats label='Total Contributions' value={loading ? '' : contributionStats?.totalContributions.toString()} /> */}

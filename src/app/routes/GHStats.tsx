@@ -13,6 +13,7 @@ import { getCurrentDayOfYear } from '../../lib/utils';
 import WeeklyChart from '../_components/WeekStats';
 import MonthlyContributionChart from '../_components/MonthlyStats';
 import GHProfileCard from '../_components/GHProfileCard';
+import TopLanguages from '../_components/TopLanguages';
 
 interface GithubContribution {
     maxStreak: number;
@@ -50,7 +51,6 @@ export default function GHStats() {
     const navigate = useNavigate();
 
     useEffect(() => {
-        console.log("username rendered", username);
         if (username) {
             setInputUsername(username);
             setSearchUsername(username);
@@ -59,11 +59,11 @@ export default function GHStats() {
     }, [username]);
 
 
-    const fetchUserData = async () => {
+    const fetchUserData = async (uname: string) => {
         const token = process.env.REACT_APP_GITHUB_TOKEN;
 
         try {
-            const response = await fetch(`https://api.github.com/users/${searchUsername}`, {
+            const response = await fetch(process.env.REACT_APP_GITHUB_USER_API + `/${uname}`, {
                 headers: {
                     'Authorization': `Basic ${btoa(token + ':x-oauth-basic')}`,
                 },
@@ -81,8 +81,8 @@ export default function GHStats() {
     };
 
     const triggerSearch = (searchUsername: string) => {
-        console.log("search triggered");
         setSearchReady(false);
+        fetchUserData(searchUsername)
         setTimeout(() => {
             setSearchReady(true);
         }, 1000);
@@ -96,7 +96,6 @@ export default function GHStats() {
         if (inputUsername) {
             setSearchUsername(inputUsername);
             triggerSearch(inputUsername);
-            fetchUserData();
         }
     };
     useEffect(() => {
@@ -110,7 +109,6 @@ export default function GHStats() {
         setInputUsername(e.target.value);
     };
     const getContributionStats = (weeks: any) => {
-        console.log("getting contributions");
         const dayoftheYear = getCurrentDayOfYear();
         let totalContributions = 0;
         let maxStreak = 0;
@@ -165,7 +163,6 @@ export default function GHStats() {
                     />
                 </form>
             </motion.div>
-            {/* {user && <GHProfileCard user={user} />} */}
             {searchReady && (
                 <motion.div
                     initial={{ opacity: 0 }}
@@ -173,8 +170,11 @@ export default function GHStats() {
                     transition={{ delay: 0.5 }}
                     className="container mx-auto px-4 py-4"
                 >
-                    <div className='flex space-x-2 items-center mb-2'>
-                        <p className="text-2xl font-bold">GitHub Stats for {searchUsername}</p>
+                    <div className='flex '>
+                        {user && <GHProfileCard user={user} />}
+                    </div>
+                    <div className='flex space-x-2 py-2 mt-6 items-center'>
+                        {user && <p className="text-2xl font-bold">GitHub Stats for {user.name}</p>}
                         <DropdownMenuButton
                             onClick={setGraphYear}
                             className='text-md md:text-2xl sm:text-xl font-bold'
@@ -197,7 +197,9 @@ export default function GHStats() {
                         />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                        <WeeklyChart data={data} />
+                        <WeeklyChart
+                            year={graphYear}
+                            data={data} />
                         <MonthlyContributionChart
                             year={graphYear}
                             data={data} />

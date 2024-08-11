@@ -4,9 +4,10 @@ import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "
 
 interface WeeklyChartProps {
     data: any;
+    year: number;
 }
 
-export default function DailyContributionChart({ data }: WeeklyChartProps) {
+export default function DailyContributionChart({ data, year }: WeeklyChartProps) {
     const weekLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     const [chartData, setChartData] = useState(() =>
@@ -40,14 +41,14 @@ export default function DailyContributionChart({ data }: WeeklyChartProps) {
 
     const chartConfig = {
         "week": {
-            color: "var(--color-foreground)",
+            color: "#2536eb",
         }
 
     } satisfies ChartConfig
 
     return (
         <div className="bg-white p-4 pb-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold mb-4">Daily Contributions</h3>
+            <h3 className="text-lg font-semibold mb-4">{`Contributions by day (${year})`}</h3>
             <div className="h-64 rounded flex items-center justify-center">
                 <ChartContainer config={chartConfig} className="h-[300px] w-full">
                     <BarChart accessibilityLayer data={chartData}>
@@ -69,7 +70,7 @@ export default function DailyContributionChart({ data }: WeeklyChartProps) {
                         <ChartTooltip content={<ChartTooltipContent />} />
                         <Bar
                             label={true}
-                            dataKey='value' fill="var(--color-background)" radius={4} />
+                            dataKey='value' fill="#236eb" radius={4} />
                     </BarChart>
                 </ChartContainer>
 
