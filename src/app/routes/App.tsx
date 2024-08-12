@@ -2,12 +2,12 @@ import { useState } from 'react';
 import { FaGithub } from "react-icons/fa";
 import { Input } from '../_components/input';
 import React from 'react';
+import { themes, useTheme } from '../context/AppThemeProvider';
 
 
 export default function App() {
-  const [searchReady, setSearchReady] = useState(false);
   const [searchValue, setSearchValue] = React.useState('');
-
+  const { theme, setTheme } = useTheme();
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchValue(e.target.value);
   };
@@ -20,7 +20,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50">
+    <div className={`min-h-screen bg-background bg-gradient theme-${theme.name}-${theme.mode}`}>
       <div className="flex flex-col items-center justify-center h-screen">
         <form onSubmit={handleSubmit} className="w-full max-w-md px-4">
           <div className="flex items-center justify-center mb-4">

@@ -1,8 +1,9 @@
-import { useDarkMode } from '../context/AppThemeProvider';
+import { useTheme } from "../context/AppThemeProvider";
 
 function GHContribution({ username, className, data, loading, error }: { username: string, className?: string, data: any, loading: boolean, error: any }) {
-    const { darkMode } = useDarkMode();
+    const { theme, setTheme } = useTheme();
 
+    const darkMode = theme.mode === 'dark';
     const styles = {
         dark: {
             zero: 'rgba(255,255,255,0.1)',
@@ -11,6 +12,8 @@ function GHContribution({ username, className, data, loading, error }: { usernam
             zero: 'rgba(0,0,0,0.1)',
         }
     }
+
+
     function getContributionColor(count: number, day: any) {
         if (count === 0) {
             return styles[darkMode ? 'dark' : 'light'].zero;

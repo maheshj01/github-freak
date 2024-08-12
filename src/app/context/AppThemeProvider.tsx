@@ -1,43 +1,56 @@
-// src/contexts/DarkModeContext.tsx
-import React, { createContext, useContext, ReactNode, useState } from "react";
+// src/contexts/ThemeContext.tsx
+import React, { createContext, useContext, ReactNode, useState, useEffect } from "react";
 
-interface DarkModeContextProps {
-  darkMode: boolean;
-  toggleDarkMode: () => void;
+type ThemeName = 'green' | 'aqua' | 'purple' | 'blue';
+type ThemeMode = 'light' | 'dark';
+
+interface Theme {
+  name: ThemeName;
+  mode: ThemeMode;
 }
 
-const DarkModeContext = createContext<DarkModeContextProps | undefined>(
-  undefined
-);
+interface ThemeContextProps {
+  theme: Theme;
+  setTheme: (theme: Theme) => void;
+}
 
-export const AppThemeProvider: React.FC<{ children: ReactNode }> = ({
-  children,
-}) => {
-  const [darkMode, setDarkMode] = useState<boolean>(false);
+const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 
-  const toggleDarkMode = () => {
-    setDarkMode((prevDarkMode) => {
-      const newDarkMode = !prevDarkMode;
-      if (newDarkMode) {
-        document.documentElement.classList.add('dark');
-      } else {
-        document.documentElement.classList.remove('dark');
-      }
-      return newDarkMode;
-    });
+export const themes: Theme[] = [
+  { name: 'green', mode: 'light' },
+  { name: 'green', mode: 'dark' },
+  // { name: 'aqua', mode: 'light' },
+  // { name: 'aqua', mode: 'dark' },
+  // { name: 'purple', mode: 'light' },
+  // { name: 'purple', mode: 'dark' },
+  // { name: 'blue', mode: 'light' },
+  // { name: 'blue', mode: 'dark' },
+];
+
+export const AppThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const [theme, setTheme] = useState<Theme>({ name: 'blue', mode: 'light' });
+
+  useEffect(() => {
+    document.documentElement.classList.remove(...themes.map(t => `theme-${t.name}-${t.mode}`));
+    document.documentElement.classList.add(`theme-${theme.name}-${theme.mode}`);
+  }, [theme]);
+
+  const contextValue: ThemeContextProps = {
+    theme,
+    setTheme,
   };
 
   return (
-    <DarkModeContext.Provider value={{ darkMode, toggleDarkMode }}>
+    <ThemeContext.Provider value={contextValue}>
       {children}
-    </DarkModeContext.Provider>
+    </ThemeContext.Provider>
   );
 };
 
-export const useDarkMode = () => {
-  const context = useContext(DarkModeContext);
+export const useTheme = () => {
+  const context = useContext(ThemeContext);
   if (!context) {
-    throw new Error("useDarkMode must be used within a AppThemeProvider");
+    throw new Error("useTheme must be used within an AppThemeProvider");
   }
   return context;
 };
