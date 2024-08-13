@@ -114,7 +114,6 @@ export default function GHStats() {
                 animate={{ height: '10rem' }}
                 transition={{ duration: 0.5 }}
             >
-                <ThemePicker />
                 <form onSubmit={handleSubmit} className="w-full max-w-md px-4">
                     <div className="flex items-center justify-center mb-4">
                         <FaGithub className="text-6xl" />

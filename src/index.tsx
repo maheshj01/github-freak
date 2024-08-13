@@ -19,7 +19,7 @@ const Layout = () => {
 
   return (
     <div className='relative'>
-      {/* {location.pathname !== '/' && <ThemePicker />} */}
+      {location.pathname !== '/' && <ThemePicker />}
       <ThemeSwitcher />
       <Outlet />
     </div>
