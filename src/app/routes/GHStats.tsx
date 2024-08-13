@@ -14,6 +14,7 @@ import WeeklyChart from '../_components/WeekStats';
 import MonthlyContributionChart from '../_components/MonthlyStats';
 import GHProfileCard from '../_components/GHProfileCard';
 import { useGitHubUser } from '../hooks/GithubUser';
+import ThemePicker from '../_components/ThemePicker';
 
 interface GithubContribution {
     maxStreak: number;
@@ -107,12 +108,13 @@ export default function GHStats() {
     }
 
     return (
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen bg-gradient theme-blue-light">
             <motion.div
                 className={`flex flex-col items-center justify-center h-40`}
                 animate={{ height: '10rem' }}
                 transition={{ duration: 0.5 }}
             >
+                <ThemePicker />
                 <form onSubmit={handleSubmit} className="w-full max-w-md px-4">
                     <div className="flex items-center justify-center mb-4">
                         <FaGithub className="text-6xl" />

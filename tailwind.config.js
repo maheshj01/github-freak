@@ -54,9 +54,12 @@ module.exports = {
         'gradient': 'var(--gradient)',
       },
       borderRadius: {
+        xxl: "var(--radius) * 4",
+        xl: "var(--radius) * 2",
         lg: `var(--radius)`,
         md: `calc(var(--radius) - 2px)`,
         sm: "calc(var(--radius) - 4px)",
+        full: "9999px",
       },
       fontFamily: {
         sans: ["var(--font-sans)", ...fontFamily.sans],
