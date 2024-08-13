@@ -19,20 +19,21 @@ const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);
 export const themes: Theme[] = [
   { name: 'green', mode: 'light' },
   { name: 'green', mode: 'dark' },
-  // { name: 'aqua', mode: 'light' },
-  // { name: 'aqua', mode: 'dark' },
-  // { name: 'purple', mode: 'light' },
-  // { name: 'purple', mode: 'dark' },
-  // { name: 'blue', mode: 'light' },
-  // { name: 'blue', mode: 'dark' },
+  { name: 'aqua', mode: 'light' },
+  { name: 'aqua', mode: 'dark' },
+  { name: 'purple', mode: 'light' },
+  { name: 'purple', mode: 'dark' },
+  { name: 'blue', mode: 'light' },
+  { name: 'blue', mode: 'dark' },
 ];
 
 export const AppThemeProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [theme, setTheme] = useState<Theme>({ name: 'blue', mode: 'light' });
 
   useEffect(() => {
-    document.documentElement.classList.remove(...themes.map(t => `theme-${t.name}-${t.mode}`));
-    document.documentElement.classList.add(`theme-${theme.name}-${theme.mode}`);
+    const root = document.body;
+    root.classList.remove(...themes.map(t => `theme-${t.name}-${t.mode}`));
+    root.classList.add(`theme-${theme.name}-${theme.mode}`);
   }, [theme]);
 
   const contextValue: ThemeContextProps = {

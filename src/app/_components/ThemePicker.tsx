@@ -9,7 +9,7 @@ const ThemePicker = () => {
             {themes.map((t, i) => (
                 <button
                     key={i}
-                    className={`w-8 h-8 bg-gradient rounded-full border-2 ${theme.name === t.name && theme.mode === t.mode ? 'border-blue-500' : 'border-white'} mr-2 mb-2 theme-${t.name}-${t.mode}`}
+                    className={`w-8 h-8 bg-gradient mr-2 mb-2 theme-${t.name}-${t.mode} rounded-full border-2 ${theme.name === t.name && theme.mode === t.mode ? 'border-blue-500' : 'border-white'}`}
                     onClick={() => setTheme(t)}
                     title={`${t.name} ${t.mode}`}
                 />

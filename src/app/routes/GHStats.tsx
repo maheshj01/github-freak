@@ -21,20 +21,6 @@ interface GithubContribution {
     totalContributions: number;
 }
 
-interface GitHubUser {
-    login: string;
-    avatar_url: string;
-    name: string;
-    bio: string;
-    location: string;
-    blog: string;
-    twitter_username: string;
-    public_repos: number;
-    followers: number;
-    following: number;
-    created_at: string;
-}
-
 export default function GHStats() {
     const { username } = useParams();
     // defines whether search bar has scrolled
@@ -129,7 +115,7 @@ export default function GHStats() {
             >
                 <form onSubmit={handleSubmit} className="w-full max-w-md px-4">
                     <div className="flex items-center justify-center mb-4">
-                        <FaGithub className="text-6xl text-black" />
+                        <FaGithub className="text-6xl" />
                         <p className='text-2xl mx-6'> Hello Freaks!</p>
                     </div>
                     <Input

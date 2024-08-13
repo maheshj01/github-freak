@@ -242,6 +242,41 @@
     --ring: 188 53% 55%;
   }
 
+  .theme-aqua-light {
+
+    /* CSS: .bg-gradient { background: var(--gradient) } */
+    --gradient: linear-gradient(to top left, #076585, #fff);
+
+    --background: 207 58.5% 2.16%;
+    --foreground: 207 9% 96.35%;
+
+    --muted: 207 45% 8.100000000000001%;
+    --muted-foreground: 207 9% 52.7%;
+
+    --popover: 207 47% 3.5100000000000002%;
+    --popover-foreground: 207 9% 96.35%;
+
+    --card: 207 47% 3.5100000000000002%;
+    --card-foreground: 207 9% 96.35%;
+
+    --border: 207 45% 8.100000000000001%;
+    --input: 207 45% 8.100000000000001%;
+
+    --primary: 207 90% 27%;
+    --primary-foreground: 207 9% 96.35%;
+
+    --secondary: 207 45% 8.100000000000001%;
+    --secondary-foreground: 207 9% 96.35%;
+
+    --accent: 207 45% 8.100000000000001%;
+    --accent-foreground: 207 9% 96.35%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 207 9% 96.35%;
+
+    --ring: 207 90% 27%;
+  }
+
   .theme-blue-dark {
 
     /* CSS: .bg-gradient { background: var(--gradient) } */
@@ -312,5 +347,4 @@
 
     --radius: 0.5rem;
   }
-
 }

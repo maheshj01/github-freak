@@ -1,6 +1,6 @@
 import React from 'react';
 import TopLanguages from './TopLanguages';
-import { FaGithub, FaLink, FaShare } from 'react-icons/fa';
+import { FaShare } from 'react-icons/fa';
 import IconButton from './IconButton';
 
 interface GitHubUser {
