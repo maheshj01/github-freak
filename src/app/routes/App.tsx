@@ -29,7 +29,7 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen `} style={{ background: `var(--gradient)` }}>
+    <div className={`min-h-screen bg-gradient ${theme.mode === 'dark' ? 'theme-aqua-dark' : 'theme-aqua-light'}`}>
       <div className="flex flex-col items-center justify-center h-screen">
         <form onSubmit={handleSubmit} className="w-full max-w-md px-4">
           <div className="flex items-center justify-center mb-4">

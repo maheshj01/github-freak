@@ -3,27 +3,46 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 import { ApolloProvider } from '@apollo/client';
-import { AppThemeProvider, themes, useTheme } from './app/context/AppThemeProvider';
+import { AppThemeProvider } from './app/context/AppThemeProvider';
+import { Outlet, useLocation } from 'react-router-dom';
 import { client } from './app/services/ApolloClient';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import ErrorRoute from './error';
 import GHStats from './app/routes/GHStats';
 import App from './app/routes/App';
 import ThemePicker from './app/_components/ThemePicker';
+import { ThemeSwitcher } from './app/_components/ThemeSwitcher';
+
+
+const Layout = () => {
+  const location = useLocation();
+
+  return (
+    <div className='relative'>
+      {location.pathname !== '/' && <ThemePicker />}
+      <ThemeSwitcher />
+      <Outlet />
+    </div>
+  );
+};
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App />,
-    errorElement: <ErrorRoute />
-  },
-  {
-    path: "/:username",
-    element: <GHStats />,
-    errorElement: <ErrorRoute />
+    element: <Layout />,
+    errorElement: <ErrorRoute />,
+    children: [
+      {
+        index: true,
+        element: <App />,
+      },
+      {
+        path: "/:username",
+        element: <GHStats />,
+      },
+    ],
   },
 ]);
-
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -32,10 +51,7 @@ root.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
       <AppThemeProvider>
-        <div className='relative'>
-          <RouterProvider router={router} />
-          <ThemePicker />
-        </div>
+        <RouterProvider router={router} />
       </AppThemeProvider>
     </ApolloProvider>
   </React.StrictMode>
