@@ -14,6 +14,7 @@ import WeeklyChart from '../_components/WeekStats';
 import MonthlyContributionChart from '../_components/MonthlyStats';
 import GHProfileCard from '../_components/GHProfileCard';
 import { useGitHubUser } from '../hooks/GithubUser';
+import { useTheme } from '../context/AppThemeProvider';
 
 interface GithubContribution {
     maxStreak: number;
@@ -119,9 +120,10 @@ export default function GHStats() {
             activeDays
         });
     };
-
+    const { theme } = useTheme();
+    const isDark = theme.mode === 'dark';
     return (
-        <div className="min-h-screen bg-gradient theme-blue-light">
+        <div className={`min-h-screen bg-gradient ${isDark ? 'theme-blue-light' : 'theme-aqua-light'}`}>
             <motion.div
                 className={`flex flex-col items-center justify-center h-40`}
                 animate={{ height: '10rem' }}
