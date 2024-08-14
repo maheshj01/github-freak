@@ -65,9 +65,9 @@ export default function TopLanguages({ username }: TopLanguagesProp) {
     // .filter(([, count]) => count > 0);
 
     return (
-        <div className="bg-white p-4">
+        <div className="p-4">
             <h2 className="text-2xl font-bold mb-4">Top Languages</h2>
-            <p className="text-gray-600 mb-4">Most used languages in {username}'s repositories:</p>
+            <p className="mb-4">Most used languages in {username}'s repositories:</p>
             <ul className="space-y-2">
                 {sortedLanguages.map(([lang, count]) => (
                     <li key={lang} className="flex items-center">

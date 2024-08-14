@@ -49,7 +49,7 @@ export default function MonthlyContributionChart({ data, year }: MonthlyContribu
 
     return (
         <div className="bg-white p-4 pb-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold mb-4">Monthly Contributions {year}</h3>
+            <h3 className="text-lg font-semibold mb-4 text-black">Monthly Contributions {year}</h3>
             <div className="h-64 rounded flex items-center justify-center">
                 <ChartContainer config={chartConfig} className="h-[300px] w-full">
                     <BarChart accessibilityLayer data={chartData}>

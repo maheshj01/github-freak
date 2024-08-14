@@ -2,6 +2,7 @@ import React from 'react';
 import TopLanguages from './TopLanguages';
 import { FaShare } from 'react-icons/fa';
 import IconButton from './IconButton';
+import { useTheme } from '../context/AppThemeProvider';
 
 interface GitHubUser {
     login: string;
@@ -27,9 +28,11 @@ const GHProfileCard: React.FC<GHProfileCardProps> = ({ user }) => {
         return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     };
 
+    const { theme, setTheme } = useTheme();
+    const isDark = theme.mode === 'dark';
     return (
         <div className="w-full bg-white shadow-md rounded-lg overflow-hidden">
-            <div className="bg-gradient-to-r from-purple-500 to-pink-500 p-4">
+            <div className={`${isDark ? 'bg-gray-400' : 'bg-gradient-to-r from-purple-500 to-pink-500'} p-4`}>
                 <div className="flex justify-between">
                     <div className="flex items-center">
                         <img
@@ -52,9 +55,9 @@ const GHProfileCard: React.FC<GHProfileCardProps> = ({ user }) => {
                     </div>
                 </div>
             </div>
-            <div className='flex justify-between flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0'>
+            <div className={`${isDark ? 'bg-gray-800' : 'bg-white'} flex justify-between flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0`}>
                 <div className="p-6">
-                    <p className="text-gray-700 mb-4 max-w-md">{user.bio}</p>
+                    <p className="mb-4 max-w-md">{user.bio}</p>
                     <div className="flex flex-wrap -mx-2 mb-4">
                         {user.location && (
                             <div className="px-2 mb-2">
@@ -78,7 +81,7 @@ const GHProfileCard: React.FC<GHProfileCardProps> = ({ user }) => {
                             </div>
                         )}
                     </div>
-                    <div className="max-w-md flex space-x-2 justify-between text-sm text-gray-600 mb-4">
+                    <div className="max-w-md flex space-x-2 justify-between text-sm mb-4">
                         <div className='flex flex-col items-center'>
                             <span className="font-bold">{user.public_repos}</span>
                             <span>Repositories</span>
@@ -92,7 +95,7 @@ const GHProfileCard: React.FC<GHProfileCardProps> = ({ user }) => {
                             <span> following</span>
                         </div>
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs">
                         Joined GitHub on {formatDate(user.created_at)}
                     </div>
                 </div>
