@@ -10,7 +10,6 @@ import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import ErrorRoute from './error';
 import GHStats from './app/routes/GHStats';
 import App from './app/routes/App';
-import ThemePicker from './app/_components/ThemePicker';
 import { ThemeSwitcher } from './app/_components/ThemeSwitcher';
 
 

@@ -34,7 +34,7 @@ export default function GHStats() {
     const fromDate = new Date(graphYear, 0, 1);
     const toDate = new Date(graphYear, 11, 31);
     const [contributionStats, setContributionStats] = React.useState<GithubContribution | null>(null);
-    const { user, loading: userLoading, error: userError } = useGitHubUser(searchUsername);
+    const { user } = useGitHubUser(searchUsername);
     const { loading, error, data } = useGitHubContributions(searchUsername, fromDate, toDate);
     const navigate = useNavigate();
 

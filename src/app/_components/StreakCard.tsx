@@ -12,7 +12,7 @@ interface StreakCardProps {
 }
 
 const StreakCard: React.FC<StreakCardProps> = ({ currentStreak, maxStreak, totalContributions, isCurrentYear, activeDays }) => {
-    const { theme, setTheme } = useTheme();
+    const { theme } = useTheme();
     const isDark = theme.mode === 'dark';
     function streakStats(label: string, value: number | undefined) {
         return (

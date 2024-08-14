@@ -28,7 +28,7 @@ const GHProfileCard: React.FC<GHProfileCardProps> = ({ user }) => {
         return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
     };
 
-    const { theme, setTheme } = useTheme();
+    const { theme } = useTheme();
     const isDark = theme.mode === 'dark';
     return (
         <div className="w-full bg-white shadow-md rounded-lg overflow-hidden">
