@@ -14,12 +14,12 @@ import WeeklyChart from '../_components/WeekStats';
 import MonthlyContributionChart from '../_components/MonthlyStats';
 import GHProfileCard from '../_components/GHProfileCard';
 import { useGitHubUser } from '../hooks/GithubUser';
-import ThemePicker from '../_components/ThemePicker';
 
 interface GithubContribution {
     maxStreak: number;
     currentStreak: number;
     totalContributions: number;
+    activeDays: number;
 }
 
 export default function GHStats() {
@@ -72,40 +72,53 @@ export default function GHStats() {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputUsername(e.target.value);
     };
+
     const getContributionStats = (weeks: any) => {
-        const dayoftheYear = getCurrentDayOfYear();
-        let totalContributions = 0;
+
         let maxStreak = 0;
         let currentStreak = 0;
-        let currentStreakEnd = 0;
-        var count = 0
-        weeks.forEach((week: any) => {
-            week.contributionDays.forEach((day: any) => {
-                totalContributions += day.contributionCount;
-                if (count <= dayoftheYear) {
-                    if (day.contributionCount > 0) {
-                        currentStreakEnd += 1;
-                        if (currentStreakEnd > maxStreak) {
-                            maxStreak = currentStreakEnd;
-                        }
-                    } else {
-                        currentStreak = currentStreakEnd;
-                        currentStreakEnd = 0;
-                    }
-                }
-                count += 1;
-            });
-        });
+        let tempStreak = 0;
+        let activeDays = 0;
+        let totalContributions = 0
+
+        const allDays = weeks.flatMap((week: any) => week.contributionDays);
+
+        const currentDayOfYear = getCurrentDayOfYear() - 1;
+        const relevantDays = allDays.slice(0, currentDayOfYear + 1);
+        const reversedRelevantDays = relevantDays.reverse();
+
+        // Calculate current streak in reverse
+        for (const day of reversedRelevantDays) {
+            if (day.contributionCount > 0) {
+                tempStreak++;
+                currentStreak = tempStreak;  // Update current streak as we go
+                maxStreak = Math.max(maxStreak, tempStreak);
+            } else {
+                break;
+            }
+        }
+        tempStreak = 0
+        // Check for all-time max streak
+        for (const day of allDays) {
+            totalContributions += day.contributionCount;
+            if (day.contributionCount > 0) {
+                activeDays++;
+                tempStreak++;
+                maxStreak = Math.max(maxStreak, tempStreak);
+            } else {
+                tempStreak = 0;
+            }
+        }
         if (currentYear !== graphYear) {
             currentStreak = 0;
         }
-
         setContributionStats({
-            maxStreak: maxStreak,
-            currentStreak: currentStreak,
-            totalContributions: totalContributions
+            maxStreak,
+            currentStreak,
+            totalContributions,
+            activeDays
         });
-    }
+    };
 
     return (
         <div className="min-h-screen bg-gradient theme-blue-light">
@@ -157,6 +170,7 @@ export default function GHStats() {
                             isCurrentYear={currentYear === graphYear}
                             currentStreak={contributionStats?.currentStreak}
                             maxStreak={contributionStats?.maxStreak}
+                            activeDays={contributionStats?.activeDays}
                             totalContributions={contributionStats?.totalContributions}
                         />
                     </div>

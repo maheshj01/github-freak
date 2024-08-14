@@ -11,8 +11,8 @@ export function DropdownMenuButton({ options, selected, onClick, className }: { 
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <div className="flex items-center mb-1">
-                    <p className={`text-blue-700 font-bold flex justify-center text-center ${className}`}> {selected}</p> <IoIosArrowDown className="w-4 h-4" />
+                <div className="flex items-center">
+                    <p className={`font-bold flex justify-center text-center ${className}`}> {selected}</p> <IoIosArrowDown className="w-4 h-4" />
                 </div>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-2">
@@ -20,7 +20,7 @@ export function DropdownMenuButton({ options, selected, onClick, className }: { 
                     options.map((option) => {
                         return (
                             <DropdownMenuItem
-                                className={`cursor-pointer flex text-lg  ${selected == option.toString() ? 'bg-gray-200 hover:bg-gray-200' : 'hover:bg-gray-200'}`}
+                                className={`cursor-pointer flex text-lg  ${selected === option.toString() ? 'bg-gray-200 text-black hover:bg-gray-200' : 'hover:bg-gray-200'}`}
                                 key={option}
                                 onClick={onClick.bind(null, option)}
                             > {option}</DropdownMenuItem>

@@ -6,10 +6,11 @@ interface StreakCardProps {
     currentStreak: number | undefined;
     maxStreak: number | undefined;
     totalContributions: number | undefined;
+    activeDays: number | undefined;
     isCurrentYear: boolean | true;
 }
 
-const StreakCard: React.FC<StreakCardProps> = ({ currentStreak, maxStreak, totalContributions, isCurrentYear }) => {
+const StreakCard: React.FC<StreakCardProps> = ({ currentStreak, maxStreak, totalContributions, isCurrentYear, activeDays }) => {
 
     function streakStats(label: string, value: number | undefined) {
         return (
@@ -31,6 +32,7 @@ const StreakCard: React.FC<StreakCardProps> = ({ currentStreak, maxStreak, total
                 <div className='flex flex-col justify-end'>
                     {isCurrentYear && streakStats('Current Streak:', currentStreak)}
                     {streakStats('Max Streak:', maxStreak)}
+                    {streakStats('Total Active Days:', activeDays)}
                 </div>
             </div>
         </div>

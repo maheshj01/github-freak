@@ -1,4 +1,6 @@
+import { TooltipProvider, TooltipTrigger } from "@radix-ui/react-tooltip";
 import { useTheme } from "../context/AppThemeProvider";
+import { Tooltip, TooltipContent } from "./tooltip";
 
 function GHContribution({ username, className, data, loading, error }: { username: string, className?: string, data: any, loading: boolean, error: any }) {
     const { theme, setTheme } = useTheme();
@@ -24,14 +26,22 @@ function GHContribution({ username, className, data, loading, error }: { usernam
     function DayContribution(props: { day: any, weekIndex: number, dayIndex: number }) {
         const { day, weekIndex, dayIndex } = props;
         return (
-            <div
-                key={`${weekIndex}-${dayIndex}`}
-                className="w-2 h-2 sm:w-3 sm:h-3 xs:w-2 rounded-xs"
-                style={{
-                    backgroundColor: getContributionColor(day.contributionCount, day),
-                }}
-                title={`${day.date}: ${day.contributionCount} contributions`}
-            />
+            <TooltipProvider>
+                <Tooltip>
+                    <TooltipTrigger asChild>
+                        <div
+                            key={`${weekIndex}-${dayIndex}`}
+                            className="w-2 h-2 sm:w-3 sm:h-3 xs:w-2 rounded-xs"
+                            style={{
+                                backgroundColor: getContributionColor(day.contributionCount, day),
+                            }}
+                        />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                        {`${day.date}: ${day.contributionCount} contributions`}
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
         );
     }
 
@@ -66,14 +76,7 @@ function GHContribution({ username, className, data, loading, error }: { usernam
                                 Contribution Chart
                             </p>
                         </div>
-                        {/* <Stats label='Total Contributions' value={loading ? '' : contributionStats?.totalContributions.toString()} /> */}
                     </div>
-                    {/* <div className='flex flex-col mx-2'>
-                        {(currentYear === graphYear) && < Stats label='Current Streak' value={loading ? '' : contributionStats?.currentStreak.toString()} />}
-
-                        <Stats label='Max Streak' value={loading ? '' : contributionStats?.maxStreak.toString()} />
-                        <Stats label='total Contributions' value={loading ? '' : contributionStats?.totalContributions.toString()} />
-                    </div> */}
                 </div>
             </div>
             <div className='flex items-center'>
