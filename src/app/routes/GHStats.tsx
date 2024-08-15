@@ -15,6 +15,7 @@ import MonthlyContributionChart from '../_components/MonthlyStats';
 import GHProfileCard from '../_components/GHProfileCard';
 import { useGitHubUser } from '../hooks/GithubUser';
 import { useTheme } from '../context/AppThemeProvider';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../_components/tabs";
 
 interface GithubContribution {
     maxStreak: number;
@@ -152,37 +153,54 @@ export default function GHStats() {
                     <div className='flex '>
                         {user && <GHProfileCard user={user} />}
                     </div>
-                    <div className='flex space-x-2 py-2 mt-6 items-center'>
-                        {user && <p className="text-2xl font-bold">GitHub Stats</p>}
-                        <DropdownMenuButton
-                            onClick={setGraphYear}
-                            className='text-md md:text-2xl text-2xl font-bold'
-                            options={[currentYear, currentYear - 1, currentYear - 2, currentYear - 3, currentYear - 4]}
-                            selected={graphYear.toString()}
-                        />
-                    </div>
-                    <div className='flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0'>
-                        <GHContribution
-                            username={searchUsername}
-                            data={data}
-                            loading={loading}
-                            error={error}
-                        />
-                        <StreakCard
-                            isCurrentYear={currentYear === graphYear}
-                            currentStreak={contributionStats?.currentStreak}
-                            maxStreak={contributionStats?.maxStreak}
-                            activeDays={contributionStats?.activeDays}
-                            totalContributions={contributionStats?.totalContributions}
-                        />
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                        <WeeklyChart
-                            year={graphYear}
-                            data={data} />
-                        <MonthlyContributionChart
-                            year={graphYear}
-                            data={data} />
+                    <div className='py-8'>
+                        <Tabs defaultValue="stats" className="">
+                            <div className='flex justify-center'>
+                                <TabsList className='max-w-[400px]'>
+                                    <TabsTrigger value="stats">Github Stats</TabsTrigger>
+                                    <TabsTrigger value="graphs">Contribution Graphs(5 years)</TabsTrigger>
+                                </TabsList>
+                            </div>
+                            <TabsContent value="stats" className='min-h-fit'>
+                                <div className='flex space-x-2 py-2 mt-6 items-center'>
+                                    {user && <p className="text-2xl font-bold">GitHub Stats</p>}
+                                    <DropdownMenuButton
+                                        onClick={setGraphYear}
+                                        className='text-md md:text-2xl text-2xl font-bold'
+                                        options={[currentYear, currentYear - 1, currentYear - 2, currentYear - 3, currentYear - 4]}
+                                        selected={graphYear.toString()}
+                                    />
+                                </div>
+                                <div className='flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0'>
+                                    <GHContribution
+                                        username={searchUsername}
+                                        data={data}
+                                        loading={loading}
+                                        error={error}
+                                    />
+                                    <StreakCard
+                                        isCurrentYear={currentYear === graphYear}
+                                        currentStreak={contributionStats?.currentStreak}
+                                        maxStreak={contributionStats?.maxStreak}
+                                        activeDays={contributionStats?.activeDays}
+                                        totalContributions={contributionStats?.totalContributions}
+                                    />
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                    <WeeklyChart
+                                        year={graphYear}
+                                        data={data} />
+                                    <MonthlyContributionChart
+                                        year={graphYear}
+                                        data={data} />
+                                </div>
+                            </TabsContent>
+                            <TabsContent value="graphs" className='flex items-center justify-center'>
+                                <div className='h-3/6'>
+                                    Graphs Currently in Progress.
+                                </div>
+                            </TabsContent>
+                        </Tabs>
                     </div>
                 </motion.div>
             )}
