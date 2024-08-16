@@ -85,8 +85,8 @@ export default function GHStats() {
 
         const allDays = weeks.flatMap((week: any) => week.contributionDays);
 
-        const currentDayOfYear = getCurrentDayOfYear() - 1;
-        const relevantDays = allDays.slice(0, currentDayOfYear + 1);
+        const currentDayOfYear = getCurrentDayOfYear();
+        const relevantDays = allDays.slice(0, currentDayOfYear - 1);
         const reversedRelevantDays = relevantDays.reverse();
 
         // Calculate current streak in reverse
@@ -98,6 +98,7 @@ export default function GHStats() {
             } else {
                 break;
             }
+            // console.log("currentStreak", currentStreak, day)
         }
         tempStreak = 0
         // Check for all-time max streak
@@ -121,6 +122,7 @@ export default function GHStats() {
             activeDays
         });
     };
+
     const { theme } = useTheme();
     const isDark = theme.mode === 'dark';
     return (
