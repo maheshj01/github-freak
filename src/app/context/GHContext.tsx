@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { gql } from '@apollo/client';
+import React, { createContext, useContext, useState } from 'react';
 
 const GET_USER_DATA = gql`
   query GetUserData($login: String!, $from: DateTime!, $to: DateTime!) {
@@ -29,7 +30,7 @@ const GET_USER_DATA = gql`
   }
 `;
 
-export function useGitHubContributions(username: string, fromDate: Date, toDate: Date) {
+export function useGitHubContributionsQuery(username: string, fromDate: Date, toDate: Date) {
   return useQuery(GET_USER_DATA, {
     variables: {
       login: username,
@@ -39,3 +40,43 @@ export function useGitHubContributions(username: string, fromDate: Date, toDate:
     fetchPolicy: 'cache-and-network',
   });
 }
+
+
+interface ContributionData {
+  [year: number]: any;
+}
+
+interface GHContextType {
+  contributions: { [username: string]: ContributionData };
+  setContributions: (username: string, year: number, data: any, error: any, loading: any) => void;
+}
+
+const GHContext = createContext<GHContextType | undefined>(undefined);
+
+export const GHContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [contributions, setContributionsState] = useState<{ [username: string]: ContributionData }>({});
+
+  const setContributions = (username: string, year: number, data: any) => {
+    setContributionsState((prev) => ({
+      ...prev,
+      [username]: {
+        ...(prev[username] || {}),
+        [year]: data,
+      },
+    }));
+  };
+
+  return (
+    <GHContext.Provider value={{ contributions, setContributions }}>
+      {children}
+    </GHContext.Provider>
+  );
+};
+
+export const useGitHubContributions = () => {
+  const context = useContext(GHContext);
+  if (!context) {
+    throw new Error('useGitHubContributions must be used within a GHContextProvider');
+  }
+  return context;
+};

@@ -8,7 +8,7 @@ import { DropdownMenuButton } from '../_components/dropdown';
 import { Input } from '../_components/input';
 import StreakCard from '../_components/StreakCard';
 import Loading from '../_components/Loading';
-import { useGitHubContributions } from '../context/GHContext';
+import { useGitHubContributions, useGitHubContributionsQuery } from '../context/GHContext';
 import { getCurrentDayOfYear } from '../../lib/utils';
 import WeeklyChart from '../_components/WeekStats';
 import MonthlyContributionChart from '../_components/MonthlyStats';
@@ -36,7 +36,7 @@ export default function GHStats() {
     const toDate = new Date(graphYear, 11, 31);
     const [contributionStats, setContributionStats] = React.useState<GithubContribution | null>(null);
     const { user } = useGitHubUser(searchUsername);
-    const { loading, error, data } = useGitHubContributions(searchUsername, fromDate, toDate);
+    const { loading, error, data } = useGitHubContributionsQuery(searchUsername, fromDate, toDate);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -177,6 +177,8 @@ export default function GHStats() {
                                         data={data}
                                         loading={loading}
                                         error={error}
+                                        className='rounded-lg'
+                                        title={`Contribution Chart`}
                                     />
                                     <StreakCard
                                         isCurrentYear={currentYear === graphYear}
@@ -196,8 +198,20 @@ export default function GHStats() {
                                 </div>
                             </TabsContent>
                             <TabsContent value="graphs" className='flex items-center justify-center'>
-                                <div className='h-3/6'>
-                                    Graphs Currently in Progress.
+                                <div className={`my-4`}>
+                                    {/* 5 list */}{
+                                        [0, 1, 2, 3, 4].map((year) => (
+                                            <div className='flex flex-col items-center justify-center'>
+                                                <GHContribution
+                                                    username={searchUsername}
+                                                    data={data}
+                                                    loading={loading}
+                                                    error={error}
+                                                    title={`${currentYear - year}`}
+                                                />
+                                            </div>
+                                        ))
+                                    }
                                 </div>
                             </TabsContent>
                         </Tabs>

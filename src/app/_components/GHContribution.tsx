@@ -2,8 +2,16 @@ import { TooltipProvider, TooltipTrigger } from "@radix-ui/react-tooltip";
 import { useTheme } from "../context/AppThemeProvider";
 import { Tooltip, TooltipContent } from "./tooltip";
 
-function GHContribution({ username, className, data, loading, error }: { username: string, className?: string, data: any, loading: boolean, error: any }) {
-    const { theme, setTheme } = useTheme();
+interface GHContributionProps {
+    username: string;
+    data: any;
+    loading?: boolean;
+    error?: any;
+    title?: string;
+    className?: string;
+}
+const GHContribution: React.FC<GHContributionProps> = ({ username, data, loading, error, title, className }) => {
+    const { theme } = useTheme();
 
     const darkMode = theme.mode === 'dark';
     const styles = {
@@ -67,16 +75,12 @@ function GHContribution({ username, className, data, loading, error }: { usernam
 
     const days = ['Mon', 'Wed', 'Fri'];
     return (
-        <div className={`p-4 rounded-lg overflow-x-auto shadow-md ${darkMode ? 'bg-gray-800' : 'bg-white'} ${className}`}>
+        <div className={`p-4 overflow-x-auto shadow-md ${darkMode ? 'bg-gray-800' : 'bg-white'} ${className}`}>
             <div className='flex flex-grow justify-between '>
-                <div className='flex flex-grow'>
-                    <div className='flex flex-col'>
-                        <div className='flex space-x-2'>
-                            <p className={`text-md md:text-2xl sm:text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-                                Contribution Chart
-                            </p>
-                        </div>
-                    </div>
+                <div className='flex space-x-2'>
+                    <p className={`text-md md:text-2xl sm:text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+                        {title}
+                    </p>
                 </div>
             </div>
             <div className='flex items-center'>
