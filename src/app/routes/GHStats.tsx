@@ -171,7 +171,7 @@ export default function GHStats() {
                                         selected={graphYear.toString()}
                                     />
                                 </div>
-                                <div className='flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0'>
+                                <div className='flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0'>
                                     <GHContribution
                                         username={searchUsername}
                                         data={data}
