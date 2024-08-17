@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from './chart';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
+import { useTheme } from '../context/AppThemeProvider';
 
 interface MonthlyContributionChartProps {
     data: any;
@@ -9,14 +10,15 @@ interface MonthlyContributionChartProps {
 
 export default function MonthlyContributionChart({ data, year }: MonthlyContributionChartProps) {
     const monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
+    const { theme } = useTheme();
+    const isDark = theme.mode === 'dark';
     const [chartData, setChartData] = useState(() =>
         monthLabels.map(label => ({ month: label, value: 0 }))
     );
 
     const chartConfig = {
-        "month": {
-            color: "#4a81f0",
+        month: {
+            color: `${isDark ? "#f8fafc" : "#3b82f6"}`
         }
 
     } satisfies ChartConfig
@@ -48,8 +50,8 @@ export default function MonthlyContributionChart({ data, year }: MonthlyContribu
     }, [data, year]);
 
     return (
-        <div className="bg-white p-4 pb-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold mb-4 text-black">Monthly Contributions {year}</h3>
+        <div className={`${isDark ? 'bg-gray-800' : 'bg-white'} p-4 pb-6 rounded-lg shadow`}>
+            <h3 className="text-lg font-semibold mb-4">Monthly Contributions {year}</h3>
             <div className="h-64 rounded flex items-center justify-center">
                 <ChartContainer config={chartConfig} className="h-[300px] w-full">
                     <BarChart accessibilityLayer data={chartData}>
@@ -66,9 +68,14 @@ export default function MonthlyContributionChart({ data, year }: MonthlyContribu
                             tickMargin={10}
                             axisLine={false}
                             tickCount={5}
+                            className='text-white'
                             tickFormatter={(value) => value + ""}
                         />
-                        <ChartTooltip content={<ChartTooltipContent />} />
+                        <ChartTooltip
+                            content={<ChartTooltipContent
+                                color="var(--color-week)"
+                                labelClassName={!isDark ? "text-white" : "text-black"}
+                            />} />
                         <Bar
                             label={true}
                             dataKey='value' fill="var(--color-month)" radius={4} />

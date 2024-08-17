@@ -1,6 +1,7 @@
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import { useEffect, useState } from 'react';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "./chart";
+import { useTheme } from "../context/AppThemeProvider";
 
 interface WeeklyChartProps {
     data: any;
@@ -9,7 +10,8 @@ interface WeeklyChartProps {
 
 export default function DailyContributionChart({ data, year }: WeeklyChartProps) {
     const weekLabels = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
+    const { theme } = useTheme();
+    const isDark = theme.mode === 'dark';
     const [chartData, setChartData] = useState(() =>
         weekLabels.map(week => (
             { week: week, value: 0 }
@@ -39,16 +41,16 @@ export default function DailyContributionChart({ data, year }: WeeklyChartProps)
         getContributionStats(weeks);
     }, [data]);
 
-    const chartConfig = {
-        "week": {
-            color: "#4a81f0",
+    const chartConfig: ChartConfig = {
+        week: {
+            label: "Week",
+            color: `${isDark ? "#f8fafc" : "#3b82f6"}`
         }
-
-    } satisfies ChartConfig
+    };
 
     return (
-        <div className="bg-white p-4 pb-6 rounded-lg shadow">
-            <h3 className="text-lg font-semibold mb-4 text-black">{`Contributions by day (${year})`}</h3>
+        <div className={`${isDark ? 'bg-gray-800' : 'bg-white'} p-4 pb-6 rounded-lg shadow`}>
+            <h3 className="text-lg font-semibold mb-4">{`Contributions by day (${year})`}</h3>
             <div className="h-64 rounded flex items-center justify-center">
                 <ChartContainer config={chartConfig} className="h-[300px] w-full">
                     <BarChart accessibilityLayer data={chartData}>
@@ -67,10 +69,15 @@ export default function DailyContributionChart({ data, year }: WeeklyChartProps)
                             tickCount={5}
                             tickFormatter={(value) => value + ""}
                         />
-                        <ChartTooltip content={<ChartTooltipContent />} />
+                        <ChartTooltip content={<ChartTooltipContent
+                            color="var(--color-week)"
+                            labelClassName={!isDark ? "text-white" : "text-black"}
+                        />} />
                         <Bar
+                            className="text-black"
                             label={true}
-                            dataKey='value' fill="var(--color-week)" radius={4} />
+                            dataKey='value'
+                            fill="var(--color-week)" color="#4ade80" radius={4} />
                     </BarChart>
                 </ChartContainer>
 
