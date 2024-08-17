@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaGithub } from "react-icons/fa";
+import { FaDownload, FaGithub } from "react-icons/fa";
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import GHContribution from '../_components/GHContribution';
@@ -9,7 +9,7 @@ import { Input } from '../_components/input';
 import StreakCard from '../_components/StreakCard';
 import Loading from '../_components/Loading';
 import { useGitHubContributionsQuery } from '../context/GHContext';
-import { getCurrentDayOfYear } from '../../lib/utils';
+import { downloadImage, getCurrentDayOfYear } from '../../lib/utils';
 import WeeklyChart from '../_components/WeekStats';
 import MonthlyContributionChart from '../_components/MonthlyStats';
 import GHProfileCard from '../_components/GHProfileCard';
@@ -18,6 +18,9 @@ import { useTheme } from '../context/AppThemeProvider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../_components/tabs";
 import GHChart from '../_components/GHChart';
 import GHLegend from './GHLegend';
+import IconButton from '../_components/IconButton';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@radix-ui/react-tooltip';
+import { TooltipProvider } from '../_components/tooltip';
 
 interface GithubContribution {
     maxStreak: number;
@@ -159,11 +162,30 @@ export default function GHStats() {
                     </div>
                     <div className='py-8'>
                         <Tabs defaultValue="stats" className="">
-                            <div className='flex justify-center'>
-                                <TabsList className='max-w-[400px]'>
-                                    <TabsTrigger value="stats">Github Stats</TabsTrigger>
-                                    <TabsTrigger value="graphs">Contribution Graphs(5 years)</TabsTrigger>
-                                </TabsList>
+                            <div className='flex justify-between items-center w-full max-w-screen-lg mx-auto px-4'>
+                                <div className='w-10'></div> {/* Spacer for alignment */}
+                                <div className='flex justify-center flex-grow'>
+                                    <TabsList className='w-full max-w-[400px]'>
+                                        <TabsTrigger value="stats" className='flex-grow'>Github Stats</TabsTrigger>
+                                        <TabsTrigger value="graphs" className='flex-grow'>Contribution Graphs(5 years)</TabsTrigger>
+                                    </TabsList>
+                                </div>
+                                <div className='w-10 flex justify-end'>
+                                    <TooltipProvider>
+                                        <Tooltip>
+                                            <TooltipTrigger asChild>
+                                                <FaDownload
+                                                    onClick={downloadImage}
+                                                    className='text-3xl cursor-pointer'
+                                                    aria-label="Download Image"
+                                                />
+                                            </TooltipTrigger>
+                                            <TooltipContent>
+                                                {`Download Image`}
+                                            </TooltipContent>
+                                        </Tooltip>
+                                    </TooltipProvider>
+                                </div>
                             </div>
                             <TabsContent value="stats" className='min-h-fit'>
                                 <div className='flex space-x-2 py-2 mt-6 items-center'>
@@ -202,7 +224,7 @@ export default function GHStats() {
                                 </div>
                             </TabsContent>
                             <TabsContent value="graphs" className='flex items-center justify-center'>
-                                <div className={`my-4 flex flex-col`}>
+                                <div id='FiveYearChart' className={`my-4 flex flex-col`}>
                                     <GHLegend username={username!} />
                                     {/* 5 list */}{
                                         [0, 1, 2, 3, 4].map((year) => {
