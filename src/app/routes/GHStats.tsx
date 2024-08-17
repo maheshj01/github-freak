@@ -17,6 +17,7 @@ import { useGitHubUser } from '../hooks/GithubUser';
 import { useTheme } from '../context/AppThemeProvider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../_components/tabs";
 import GHChart from '../_components/GHChart';
+import GHLegend from './GHLegend';
 
 interface GithubContribution {
     maxStreak: number;
@@ -201,7 +202,8 @@ export default function GHStats() {
                                 </div>
                             </TabsContent>
                             <TabsContent value="graphs" className='flex items-center justify-center'>
-                                <div className={`my-4`}>
+                                <div className={`my-4 flex flex-col`}>
+                                    <GHLegend username={username!} />
                                     {/* 5 list */}{
                                         [0, 1, 2, 3, 4].map((year) => {
                                             const fDate = new Date(currentYear - year, 0, 1);

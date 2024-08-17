@@ -1,6 +1,7 @@
 import { TooltipProvider, TooltipTrigger } from "@radix-ui/react-tooltip";
 import { useTheme } from "../context/AppThemeProvider";
 import { Tooltip, TooltipContent } from "./tooltip";
+import GHLegend from "../routes/GHLegend";
 
 interface GHContributionProps {
     username: string;
@@ -82,6 +83,7 @@ const GHContribution: React.FC<GHContributionProps> = ({ username, data, loading
                         {title}
                     </p>
                 </div>
+                <GHLegend />
             </div>
             <div className='flex items-center'>
                 <div className='flex flex-col gap-1 lg:mt-5 md:mt-4 sm: xs:mt-2 text-xs sm:text-lg'>
