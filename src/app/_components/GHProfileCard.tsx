@@ -31,7 +31,7 @@ const GHProfileCard: React.FC<GHProfileCardProps> = ({ user }) => {
     const { theme } = useTheme();
     const isDark = theme.mode === 'dark';
     return (
-        <div className="w-full bg-white shadow-md rounded-lg overflow-hidden">
+        <div className="w-full bg-white shadow-md rounded-lg overflow-hidden max-w-[1080px]">
             <div className={`${isDark ? 'bg-gray-400' : 'bg-gradient-to-r from-purple-500 to-pink-500'} p-4`}>
                 <div className="flex justify-between">
                     <div className="flex items-center">

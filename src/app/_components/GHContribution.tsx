@@ -1,7 +1,7 @@
 import { TooltipProvider, TooltipTrigger } from "@radix-ui/react-tooltip";
 import { useTheme } from "../context/AppThemeProvider";
 import { Tooltip, TooltipContent } from "./tooltip";
-import GHLegend from "../routes/GHLegend";
+import GHLegend from "./GHLegend";
 
 interface GHContributionProps {
     username: string;

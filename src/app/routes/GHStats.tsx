@@ -17,7 +17,7 @@ import { useGitHubUser } from '../hooks/GithubUser';
 import { useTheme } from '../context/AppThemeProvider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../_components/tabs";
 import GHChart from '../_components/GHChart';
-import GHLegend from './GHLegend';
+import GHLegend from '../_components/GHLegend';
 import IconButton from '../_components/IconButton';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@radix-ui/react-tooltip';
 import { TooltipProvider } from '../_components/tooltip';
@@ -157,7 +157,7 @@ export default function GHStats() {
                     transition={{ delay: 0.5 }}
                     className="container mx-auto px-4 py-4"
                 >
-                    <div className='flex '>
+                    <div className='flex justify-center'>
                         {user && <GHProfileCard user={user} />}
                     </div>
                     <div className='py-8'>
