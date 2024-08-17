@@ -21,6 +21,7 @@ import GHLegend from '../_components/GHLegend';
 import IconButton from '../_components/IconButton';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@radix-ui/react-tooltip';
 import { TooltipProvider } from '../_components/tooltip';
+import GHAreaChart from '../_components/AreaChart';
 
 interface GithubContribution {
     maxStreak: number;
@@ -144,7 +145,7 @@ export default function GHStats() {
                 <form onSubmit={handleSubmit} className="w-full max-w-md px-4">
                     <div className="flex items-center justify-center mb-4">
                         <FaGithub className="text-6xl" />
-                        <p className='text-2xl mx-6' > Freak</p>
+                        <p className='text-2xl mx-6' > Hello Freaks!</p>
                     </div>
                     <Input
                         placeholder="Enter your username"
@@ -221,7 +222,7 @@ export default function GHStats() {
                                         totalContributions={contributionStats?.totalContributions}
                                     />
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
                                     <WeeklyChart
                                         year={graphYear}
                                         data={data} />
@@ -229,6 +230,9 @@ export default function GHStats() {
                                         year={graphYear}
                                         data={data} />
                                 </div>
+                                <GHAreaChart
+                                    year={graphYear}
+                                    data={data} />
                             </TabsContent>
                             <TabsContent value="graphs" className='flex items-center justify-center'>
                                 <div id='FiveYearChart' className={`my-4 flex flex-col`}>
