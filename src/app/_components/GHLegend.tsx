@@ -16,9 +16,15 @@ const GHLegend = ({ username }: { username?: string }) => {
         <div className={`px-4 flex justify-between items-center p-2  ${isDark ? 'bg-gray-800' : 'bg-white'} `}>
             {
                 username && (
-                    <div className={`pt-2 ${isDark ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'} text-2xl font-bold`}>
-                        {`@${username} on Github`}
-                    </div>)}
+                    <div className={`pt-2 ${isDark ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'} font-bold`}>
+                        <span className={`${isDark ? 'text-green-600' : 'text-green-800'}`}>
+                            {`@${username} `}
+                        </span>
+                        <span>
+                            on GitHub
+                        </span>
+                    </div>)
+            }
             <div className="flex items-center space-x-1">
                 <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>Less</span>
                 {legendColors.map((color, index) => (
@@ -29,7 +35,7 @@ const GHLegend = ({ username }: { username?: string }) => {
                 ))}
                 <span className={`text-xs ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>More</span>
             </div>
-        </div>
+        </div >
     );
 };
 

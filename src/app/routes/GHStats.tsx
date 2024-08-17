@@ -43,7 +43,7 @@ export default function GHStats() {
     const { user } = useGitHubUser(searchUsername);
     const { loading, error, data } = useGitHubContributionsQuery(searchUsername, fromDate, toDate);
     const navigate = useNavigate();
-
+    const [tabValue, setTabValue] = useState('stats');
     useEffect(() => {
         if (username) {
             setInputUsername(username);
@@ -161,7 +161,9 @@ export default function GHStats() {
                         {user && <GHProfileCard user={user} />}
                     </div>
                     <div className='py-8'>
-                        <Tabs defaultValue="stats" className="">
+                        <Tabs
+                            onValueChange={setTabValue}
+                            defaultValue="stats" className="">
                             <div className='flex justify-between items-center w-full max-w-screen-lg mx-auto px-4'>
                                 <div className='w-10'></div> {/* Spacer for alignment */}
                                 <div className='flex justify-center flex-grow'>
@@ -170,7 +172,7 @@ export default function GHStats() {
                                         <TabsTrigger value="graphs" className='flex-grow'>Contribution Graphs(5 years)</TabsTrigger>
                                     </TabsList>
                                 </div>
-                                <div className='w-10 flex justify-end'>
+                                {tabValue === 'graphs' && (<div className='w-10 flex justify-end'>
                                     <TooltipProvider>
                                         <Tooltip>
                                             <TooltipTrigger asChild>
@@ -186,6 +188,7 @@ export default function GHStats() {
                                         </Tooltip>
                                     </TooltipProvider>
                                 </div>
+                                )}
                             </div>
                             <TabsContent value="stats" className='min-h-fit'>
                                 <div className='flex space-x-2 py-2 mt-6 items-center'>
