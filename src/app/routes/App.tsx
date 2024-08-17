@@ -45,13 +45,17 @@ export default function App() {
         }}
       >
         <form onSubmit={handleSubmit} className="w-full max-w-md px-4">
-          <div className="flex items-center justify-center mb-4">
+          <motion.div
+            animate={{ scale: hasSearched ? 0.9 : 1 }}
+            transition={{ duration: 0.5 }}
+            className="flex items-center justify-center mb-8">
             <FaGithub className="text-6xl" />
-            <p className='text-2xl mx-6'> Hello Freaks!</p>
-          </div>{/* <ThemeDebug /> */}
+            <p className='text-2xl mx-6 font-mono' > Hello Freaks!</p>
+          </motion.div>
+          {/* <ThemeDebug /> */}
           <Input
-            placeholder="Enter a GitHub username"
-            className="w-full px-4 py-2 text-gray-700 bg-white border rounded-lg focus:outline-none focus:border-blue-500"
+            placeholder="Enter your Github username"
+            className="w-full px-4 py-2 text-gray-700 bg-white border rounded-lg focus:outline-none focus:border-blue-500 text-center max-w-[400px] text-lg"
             value={searchValue}
             onChange={handleInputChange}
           />

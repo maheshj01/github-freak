@@ -49,7 +49,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <ApolloProvider client={client}>
-      <AppThemeProvider>
+      <AppThemeProvider storageKey="react-ui-theme">
         <RouterProvider router={router} />
       </AppThemeProvider>
     </ApolloProvider>
