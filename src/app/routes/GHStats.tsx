@@ -8,7 +8,7 @@ import { DropdownMenuButton } from '../_components/dropdown';
 import { Input } from '../_components/input';
 import StreakCard from '../_components/StreakCard';
 import Loading from '../_components/Loading';
-import { useGitHubContributions, useGitHubContributionsQuery } from '../context/GHContext';
+import { useGitHubContributionsQuery } from '../context/GHContext';
 import { getCurrentDayOfYear } from '../../lib/utils';
 import WeeklyChart from '../_components/WeekStats';
 import MonthlyContributionChart from '../_components/MonthlyStats';
@@ -16,6 +16,7 @@ import GHProfileCard from '../_components/GHProfileCard';
 import { useGitHubUser } from '../hooks/GithubUser';
 import { useTheme } from '../context/AppThemeProvider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../_components/tabs";
+import GHChart from '../_components/GHChart';
 
 interface GithubContribution {
     maxStreak: number;
@@ -202,17 +203,19 @@ export default function GHStats() {
                             <TabsContent value="graphs" className='flex items-center justify-center'>
                                 <div className={`my-4`}>
                                     {/* 5 list */}{
-                                        [0, 1, 2, 3, 4].map((year) => (
-                                            <div className='flex flex-col items-center justify-center'>
-                                                <GHContribution
-                                                    username={searchUsername}
-                                                    data={data}
-                                                    loading={loading}
-                                                    error={error}
-                                                    title={`${currentYear - year}`}
-                                                />
-                                            </div>
-                                        ))
+                                        [0, 1, 2, 3, 4].map((year) => {
+                                            const fDate = new Date(currentYear - year, 0, 1);
+                                            const tDate = new Date(currentYear - year, 11, 31);
+                                            return (
+                                                <div className='flex flex-col items-center justify-center'>
+                                                    <GHChart
+                                                        username={searchUsername}
+                                                        fromDate={fDate}
+                                                        toDate={tDate}
+                                                        year={currentYear - year} />
+                                                </div>
+                                            );
+                                        })
                                     }
                                 </div>
                             </TabsContent>
