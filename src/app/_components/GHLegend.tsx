@@ -16,7 +16,7 @@ const GHLegend = ({ username }: { username?: string }) => {
         <div className={`px-4 flex justify-between items-center p-2  ${isDark ? 'bg-gray-800' : 'bg-white'} `}>
             {
                 username && (
-                    <div className={`pt-2 ${isDark ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'} font-bold`}>
+                    <div className={` font-mono pt-2 ${isDark ? 'bg-gray-800 text-white' : 'bg-white text-gray-800'} font-bold`}>
                         <span className={`${isDark ? 'text-green-600' : 'text-green-800'}`}>
                             {`@${username} `}
                         </span>

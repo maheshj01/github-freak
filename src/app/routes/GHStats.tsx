@@ -76,8 +76,12 @@ export default function GHStats() {
         }
     }, [data])
 
+
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setInputUsername(e.target.value);
+        const newValue = e.target.value.replace(/\s+/g, '');
+        if (inputUsername !== newValue) {
+            setInputUsername(newValue);
+        }
     };
 
     const getContributionStats = (weeks: any) => {
@@ -140,7 +144,7 @@ export default function GHStats() {
                 <form onSubmit={handleSubmit} className="w-full max-w-md px-4">
                     <div className="flex items-center justify-center mb-4">
                         <FaGithub className="text-6xl" />
-                        <p className='text-2xl mx-6'> Hello Freaks!</p>
+                        <p className='text-2xl mx-6' > Freak</p>
                     </div>
                     <Input
                         placeholder="Enter your username"

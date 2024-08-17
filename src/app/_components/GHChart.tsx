@@ -167,16 +167,13 @@ function GHChart({ username, className, fromDate, toDate, year }: { username: st
     return (
         <div className={`p-4 overflow-x-auto ${darkMode ? 'bg-gray-800' : 'bg-white'} ${className}`}>
             <div className='flex flex-grow justify-between '>
-                <div className='flex flex-grow'>
-                    <div className='flex flex-col'>
-                        <div className='flex space-x-2'>
-                            <p className={`text-md md:text-2xl sm:text-xl font-bold ${darkMode ? 'text-white' : 'text-gray-800'}`}>
-                                {year}
-                            </p>
-                        </div>
-                        {/* <Stats label='Total Contributions' value={loading ? '' : contributionStats?.totalContributions.toString()} /> */}
+                <div className='flex items-center  flex-grow'>
+                    <div className='flex space-x-2'>
+                        <p className={`font-sans font-semibold text-md md:text-2xl sm:text-xl ${darkMode ? 'text-white' : 'text-gray-800'}`}>
+                            {year}
+                        </p>
                     </div>
-                    <div className='flex flex-row space-x-2 mx-3 items-center mb-1'>
+                    <div className='flex flex-row space-x-2 mx-3 items-center'>
                         {(currentYear === graphYear) && < Stats label='Current Streak' value={loading ? '' : contributionStats?.currentStreak.toString()} />}
 
                         <Stats label='Max Streak' value={loading ? '' : contributionStats?.maxStreak.toString()} />

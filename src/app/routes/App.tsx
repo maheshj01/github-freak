@@ -11,7 +11,10 @@ export default function App() {
   const [hasSearched, setHasSearched] = useState(false);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchValue(e.target.value);
+    const newValue = e.target.value.replace(/\s+/g, '');
+    if (searchValue !== newValue) {
+      setSearchValue(newValue);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
