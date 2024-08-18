@@ -15,8 +15,8 @@ export function getCurrentDayOfYear(): number {
 }
 
 
-export const downloadImage = async () => {
-    const preview = document.getElementById('FiveYearChart');
+export const downloadImage = async (id: string = "FiveYearChart") => {
+    const preview = document.getElementById(id);
     if (!preview) return;
 
     // // Ensure all images within the preview element are fully loaded

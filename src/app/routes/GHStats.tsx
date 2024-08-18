@@ -46,6 +46,7 @@ export default function GHStats() {
     const { loading, error, data } = useGitHubContributionsQuery(searchUsername, fromDate, toDate);
     const navigate = useNavigate();
     const [tabValue, setTabValue] = useState('stats');
+
     useEffect(() => {
         if (username) {
             setInputUsername(username);
@@ -138,7 +139,7 @@ export default function GHStats() {
     const { theme } = useTheme();
     const isDark = theme.mode === 'dark';
     return (
-        <div className={`min-h-screen bg-gradient ${isDark ? 'theme-blue-light' : 'theme-aqua-light'}`}>
+        <div id="githubprofile" className={`min-h-screen bg-gradient ${isDark ? 'theme-blue-light' : 'theme-aqua-light'}`}>
             <motion.div
                 className={`flex flex-col items-center justify-center h-40`}
                 animate={{ height: '10rem' }}
@@ -184,7 +185,7 @@ export default function GHStats() {
                                         <Tooltip>
                                             <TooltipTrigger asChild>
                                                 <FaDownload
-                                                    onClick={downloadImage}
+                                                    onClick={() => downloadImage()}
                                                     className='text-3xl cursor-pointer'
                                                     aria-label="Download Image"
                                                 />
