@@ -22,6 +22,7 @@ import IconButton from '../_components/IconButton';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@radix-ui/react-tooltip';
 import { TooltipProvider } from '../_components/tooltip';
 import GHAreaChart from '../_components/AreaChart';
+import Analytics from '../services/Analytics';
 
 interface GithubContribution {
     maxStreak: number;
@@ -81,6 +82,7 @@ export default function GHStats() {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value.replace(/\s+/g, '');
         if (inputUsername !== newValue) {
+            Analytics.logSearch(inputUsername);
             setInputUsername(newValue);
         }
     };
@@ -149,7 +151,7 @@ export default function GHStats() {
                     </div>
                     <Input
                         placeholder="Enter your Github username"
-                        className="w-full px-4 py-2 text-gray-700 bg-white border rounded-lg focus:outline-none focus:border-blue-500 text-center text-lg font-mono"
+                        className={`w-full px-4 py-2 text-gray-800 ${isDark ? 'bg-transparent text-white' : 'bg-gray-300'} border rounded-lg focus:outline-none focus:border-white-500 text-center text-lg font-mono`}
                         value={inputUsername}
                         onChange={handleInputChange}
                     />

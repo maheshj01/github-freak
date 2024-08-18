@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FaGithub } from "react-icons/fa";
 import { Input } from '../_components/input';
 import React from 'react';
 import { useTheme } from '../context/AppThemeProvider';
 import { motion } from 'framer-motion';
+import Analytics from '../services/Analytics';
 
 export default function App() {
   const [searchValue, setSearchValue] = React.useState('');
@@ -20,12 +21,17 @@ export default function App() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (searchValue) {
+      Analytics.logSearch(searchValue);
       setHasSearched(true);
       // Wait for the animation to complete before navigating
       await new Promise(resolve => setTimeout(resolve, 500));
       window.location.href = `/${searchValue}`;
     }
   };
+
+  useEffect(() => {
+    Analytics.logPageView('/', 'Home');
+  })
 
   const ThemeDebug = () => {
     return (
