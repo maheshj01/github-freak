@@ -8,3 +8,4 @@ Sample screenshots of the project are shown below:
 ![github-freak (4)](https://github.com/user-attachments/assets/ef167d23-eb6d-42d5-8597-a17c060bb735)
 
 Contributions are welcome. Feel free to fork the project and submit a pull request. For Contributing, please refer to the [CONTRIBUTING.md](./Contributing.md)
+![alt text](image.png)
