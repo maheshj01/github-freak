@@ -61,7 +61,7 @@ export default function App() {
           {/* <ThemeDebug /> */}
           <Input
             placeholder="Enter your Github username"
-            className="w-full px-4 py-2 text-gray-700 bg-white border rounded-lg focus:outline-none focus:border-blue-500 text-center max-w-[400px] text-lg"
+            className="w-full px-4 py-2 text-gray-700 bg-white border rounded-lg focus:outline-none focus:border-blue-500 text-center max-w-[400px] text-lg font-semibold font-mono"
             value={searchValue}
             onChange={handleInputChange}
           />

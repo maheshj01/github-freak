@@ -151,7 +151,7 @@ export default function GHStats() {
                     </div>
                     <Input
                         placeholder="Enter your Github username"
-                        className={`w-full px-4 py-2 text-gray-800 ${isDark ? 'bg-transparent text-white' : 'bg-gray-300'} border rounded-lg focus:outline-none focus:border-white-500 text-center text-lg font-mono`}
+                        className={`w-full px-4 py-2 ${isDark ? 'bg-transparent text-white' : 'bg-gray-300 text-black'} border rounded-lg focus:outline-none focus:border-white-500 text-center text-lg font-mono`}
                         value={inputUsername}
                         onChange={handleInputChange}
                     />

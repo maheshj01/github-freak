@@ -9,7 +9,6 @@
     @apply bg-background text-foreground;
   }
 
-
   :root {
     --gradient: linear-gradient(to top left, #F7F8F8, #ACBB78);
     --background: 191 4.550000000000001% 7.76%;
@@ -131,7 +130,7 @@
   .theme-purple-light {
 
     /* CSS: .bg-gradient { background: var(--gradient) } */
-    --gradient: linear-gradient(to top left,#a1c4fd,#c2e9fb);
+    --gradient: linear-gradient(to top left, #a1c4fd, #c2e9fb);
 
     --background: 231 62.4% 6.48%;
     --foreground: 231 9.6% 99.05%;
@@ -161,7 +160,7 @@
     --destructive-foreground: 231 9.6% 99.05%;
 
     --ring: 231 96% 81%;
-}
+  }
 
 
   .theme-purple-dark {
