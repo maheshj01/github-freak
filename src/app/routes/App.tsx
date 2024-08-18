@@ -5,6 +5,7 @@ import React from 'react';
 import { useTheme } from '../context/AppThemeProvider';
 import { motion } from 'framer-motion';
 import Analytics from '../services/Analytics';
+import AutoscrollingTopRepos from '../_components/top-repositories';
 
 export default function App() {
   const [searchValue, setSearchValue] = React.useState('');
@@ -31,7 +32,7 @@ export default function App() {
 
   useEffect(() => {
     Analytics.logPageView('/', 'Home');
-  })
+  }, []);
 
   const ThemeDebug = () => {
     return (
@@ -42,23 +43,23 @@ export default function App() {
   };
 
   return (
-    <div className={`min-h-screen bg-gradient ${theme.mode === 'dark' ? 'theme-aqua-dark' : 'theme-aqua-light'}`}>
+    <div className={`min-h-screen bg-gradient ${theme.mode === 'dark' ? 'theme-aqua-dark' : 'theme-aqua-light'} z-50`}>
+      <AutoscrollingTopRepos />
       <motion.div
-        className="flex flex-col items-center justify-center h-screen"
+        className="flex flex-col items-center justify-center h-screen z-10"
         animate={{
           height: hasSearched ? '20vh' : '100vh',
           transition: { duration: 0.5 }
         }}
       >
-        <form onSubmit={handleSubmit} className="w-full max-w-md px-4">
+        <form onSubmit={handleSubmit} className="w-full max-w-md px-4 mt-48">
           <motion.div
             animate={{ scale: hasSearched ? 0.9 : 1 }}
             transition={{ duration: 0.5 }}
             className="flex items-center justify-center mb-8">
             <FaGithub className="text-6xl" />
-            <p className='text-2xl mx-6 font-mono' > Hello Freaks!</p>
+            <p className='text-2xl mx-6 font-mono'> Hello Freaks!</p>
           </motion.div>
-          {/* <ThemeDebug /> */}
           <Input
             placeholder="Enter your Github username"
             className="w-full px-4 py-2 text-gray-700 bg-white border rounded-lg focus:outline-none focus:border-blue-500 text-center max-w-[400px] text-lg font-semibold font-mono"

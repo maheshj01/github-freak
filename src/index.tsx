@@ -11,6 +11,8 @@ import ErrorRoute from './error';
 import GHStats from './app/routes/GHStats';
 import App from './app/routes/App';
 import { ThemeSwitcher } from './app/_components/ThemeSwitcher';
+import { Button } from './app/_components/button';
+import { FaGithub } from 'react-icons/fa';
 
 
 const Layout = () => {
@@ -18,8 +20,17 @@ const Layout = () => {
 
   return (
     <div className='relative'>
-      {/* {location.pathname !== '/' && <ThemePicker />} */}
-      <ThemeSwitcher />
+      <div className="fixed top-5 right-2 flex items-center space-x-2">
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => window.open(process.env.REACT_APP_GITHUB_REPO, '_blank')}
+        >
+          <FaGithub className="mr-2 h-4 w-4" />
+          GitHub
+        </Button>
+        <ThemeSwitcher />
+      </div>
       <Outlet />
     </div>
   );
