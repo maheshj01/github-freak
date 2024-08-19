@@ -68,7 +68,12 @@ const GHProfileCard: React.FC<GHProfileCardProps> = ({ user }) => {
                         )}
                         {user.blog && (
                             <div className="px-2 mb-2">
-                                <a href={user.blog} target="_blank" rel="noopener noreferrer" className="bg-blue-100 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 hover:bg-blue-200">
+                                <a
+                                    href={user.blog.startsWith('http://') || user.blog.startsWith('https://') ? user.blog : `https://${user.blog}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="cursor-pointer bg-blue-100 rounded-full px-3 py-1 text-sm font-semibold text-blue-700 hover:bg-blue-200"
+                                >
                                     🌐 Website
                                 </a>
                             </div>
