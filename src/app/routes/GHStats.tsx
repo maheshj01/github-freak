@@ -18,11 +18,11 @@ import { useTheme } from '../context/AppThemeProvider';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../_components/tabs";
 import GHChart from '../_components/GHChart';
 import GHLegend from '../_components/GHLegend';
-import IconButton from '../_components/IconButton';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@radix-ui/react-tooltip';
 import { TooltipProvider } from '../_components/tooltip';
 import GHAreaChart from '../_components/AreaChart';
 import Analytics from '../services/Analytics';
+import LegendThemeSelector from '../_components/LegendThemeSelector';
 
 interface GithubContribution {
     maxStreak: number;
@@ -44,6 +44,7 @@ export default function GHStats() {
     const [contributionStats, setContributionStats] = React.useState<GithubContribution | null>(null);
     const { user } = useGitHubUser(searchUsername);
     const { loading, error, data } = useGitHubContributionsQuery(searchUsername, fromDate, toDate);
+    console.log(data)
     const navigate = useNavigate();
     const [tabValue, setTabValue] = useState('stats');
 
@@ -111,7 +112,6 @@ export default function GHStats() {
             } else {
                 break;
             }
-            // console.log("currentStreak", currentStreak, day)
         }
         tempStreak = 0
         // Check for all-time max streak
@@ -125,6 +125,7 @@ export default function GHStats() {
                 tempStreak = 0;
             }
         }
+
         if (currentYear !== graphYear) {
             currentStreak = 0;
         }
@@ -143,12 +144,13 @@ export default function GHStats() {
             <motion.div
                 className={`flex flex-col items-center justify-center h-40`}
                 animate={{ height: '10rem' }}
-                transition={{ duration: 0.5 }}
-            >
+                transition={{ duration: 0.5 }}>
                 <form onSubmit={handleSubmit} className="w-full max-w-md px-4">
                     <div className="flex items-center justify-center mb-8">
                         <FaGithub className="text-6xl" />
-                        <p className='text-2xl mx-6 font-mono' > Hello Freaks!</p>
+                        <div className='hidden md:block
+                        
+                        '><p className='text-2xl mx-6 font-mono' > Hello Freaks!</p></div>
                     </div>
                     <Input
                         placeholder="Enter your Github username"
@@ -173,7 +175,7 @@ export default function GHStats() {
                             onValueChange={setTabValue}
                             defaultValue="stats" className="">
                             <div className='flex justify-between items-center w-full max-w-screen-lg mx-auto px-4'>
-                                <div className='w-10'></div> {/* Spacer for alignment */}
+                                <LegendThemeSelector />
                                 <div className='flex justify-center flex-grow'>
                                     <TabsList className='w-full max-w-[400px]'>
                                         <TabsTrigger value="stats" className='flex-grow'>Github Stats</TabsTrigger>
@@ -240,7 +242,7 @@ export default function GHStats() {
                             <TabsContent value="graphs" className='flex items-center justify-center'>
                                 <div id='FiveYearChart' className={`my-4 flex flex-col`}>
                                     <GHLegend username={username!} />
-                                    {/* 5 list */}{
+                                    {
                                         [0, 1, 2, 3, 4].map((year) => {
                                             const fDate = new Date(currentYear - year, 0, 1);
                                             const tDate = new Date(currentYear - year, 11, 31);

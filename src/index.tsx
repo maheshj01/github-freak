@@ -4,31 +4,37 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import { ApolloProvider } from '@apollo/client';
 import { AppThemeProvider } from './app/context/AppThemeProvider';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { client } from './app/services/ApolloClient';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import ErrorRoute from './error';
 import GHStats from './app/routes/GHStats';
 import App from './app/routes/App';
 import { ThemeSwitcher } from './app/_components/ThemeSwitcher';
-import { Button } from './app/_components/button';
-import { FaGithub } from 'react-icons/fa';
+import YearInGithub from './app/routes/YearInGithub';
+import AnimatedButton from './app/_components/AnimatedButton';
+import { Provider } from 'react-redux';
+import { store } from './redux/store';
 
 
 const Layout = () => {
-  const location = useLocation();
-
+  const date = new Date();
+  const isLastWeekOfYear = date.getMonth() === 11 && date.getDate() >= 24;
   return (
     <div className='relative'>
-      <div className="fixed top-5 right-2 flex items-center space-x-2">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => window.open(process.env.REACT_APP_GITHUB_REPO, '_blank')}
-        >
-          <FaGithub className="mr-2 h-4 w-4" />
-          GitHub
-        </Button>
+      <div className="fixed top-5 right-2 flex items-center w-full">
+        <div className='ml-32'>
+
+        </div>
+        <div />
+        <div className=' grow flex justify-end'>
+          {isLastWeekOfYear && <AnimatedButton onClick={() => {
+            window.location.href = '/year-in-github';
+          }}>
+            Year in Github
+          </AnimatedButton>
+          }
+        </div>
         <ThemeSwitcher />
       </div>
       <Outlet />
@@ -52,6 +58,10 @@ const router = createBrowserRouter([
       },
     ],
   },
+  {
+    path: "/year-in-github",
+    element: <YearInGithub />,
+  },
 ]);
 
 const root = ReactDOM.createRoot(
@@ -59,11 +69,13 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <React.StrictMode>
-    <ApolloProvider client={client}>
-      <AppThemeProvider storageKey="react-ui-theme">
-        <RouterProvider router={router} />
-      </AppThemeProvider>
-    </ApolloProvider>
+    <Provider store={store}>
+      <ApolloProvider client={client}>
+        <AppThemeProvider storageKey="react-ui-theme">
+          <RouterProvider router={router} />
+        </AppThemeProvider>
+      </ApolloProvider>
+    </Provider>
   </React.StrictMode>
 );
 

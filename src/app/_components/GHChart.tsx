@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useQuery } from '@apollo/client';
 import { gql } from '@apollo/client';
-import { DropdownMenuButton } from './dropdown';
 import { useTheme } from '../context/AppThemeProvider';
 import { getCurrentDayOfYear } from '../../lib/utils';
+import { useAppSelector } from '../hooks/Legend';
 
 const GET_USER_DATA = gql`
   query GetUserData($login: String!, $from: DateTime!, $to: DateTime!) {
@@ -41,10 +41,11 @@ interface GithubContribution {
 
 function GHChart({ username, className, fromDate, toDate, year }: { username: string, className?: string, fromDate: Date, toDate: Date, year: number }) {
     const { theme } = useTheme();
+    const legendColors = useAppSelector((state) => state.legend.legendColors);
     const darkMode = theme.mode === 'dark';
     // Calculate the date range for the current year
     const currentYear = new Date().getFullYear();
-    const [graphYear, setGraphYear] = React.useState<number>(year);
+    const [graphYear] = React.useState<number>(year);
     const [contributionStats, setContributionStats] = React.useState<GithubContribution | null>(null);
 
     const { loading, error, data } = useQuery(GET_USER_DATA, {
@@ -118,22 +119,22 @@ function GHChart({ username, className, fromDate, toDate, year }: { username: st
             zero: 'rgba(0,0,0,0.1)',
         }
     }
-    function getContributionColor(count: number, day: any) {
-        if (count === 0) {
-            return styles[darkMode ? 'dark' : 'light'].zero;
-        }
-        return day.color;
-    }
 
     function DayContribution(props: { day: any, weekIndex: number, dayIndex: number }) {
         const { day, weekIndex, dayIndex } = props;
+        var bgColor = legendColors[0];
+        if (day.contributionCount > 0 && day.contributionCount < 5) {
+            bgColor = legendColors[1]
+        } else if (day.contributionCount >= 5 && day.contributionCount < 10) {
+            bgColor = legendColors[2]
+        }
+        else if (day.contributionCount >= 10) {
+            bgColor = legendColors[3]
+        }
         return (
             <div
                 key={`${weekIndex}-${dayIndex}`}
-                className="w-2 h-2 sm:w-3 sm:h-3 xs:w-2 rounded-xs"
-                style={{
-                    backgroundColor: getContributionColor(day.contributionCount, day),
-                }}
+                className={`w-2 h-2 sm:w-3 sm:h-3 xs:w-2 rounded-xs ${bgColor}`}
                 title={`${day.date}: ${day.contributionCount} contributions`}
             />
         );
@@ -151,15 +152,94 @@ function GHChart({ username, className, fromDate, toDate, year }: { username: st
         );
     }
 
+    function MonthRow() {
+        return (
+            <div className='pl-2 flex gap-8 sm:gap-10 md:gap-10 lg:gap-8'>
+                {months.map((month, index) => (
+                    <div key={index} className='w-10 text-xs sm:text-lg dark:text-white'>
+                        {month}
+                    </div>
+                ))}
+            </div>
+        );
+    }
+
+
+    function ContributonMatrix() {
+        const firstDayOffset = new Date(weeks[0]?.contributionDays[0]?.date).getDay();
+        return (
+            <div className='flex gap-1 rounded-md p-2'>
+                {(!loading && !error) ? (
+                    <>
+                        {/* First week with padding */}
+                        <div className='flex flex-col gap-1'>
+                            {firstDayOffset < 6 && [...Array(firstDayOffset + 1)].map((_, index) => (
+                                <DayContribution
+                                    key={`${index + 1}-${index}`}
+                                    day={{
+                                        contributionCount: 0,
+                                        color: styles[darkMode ? 'dark' : 'light'].zero,
+                                        date: '',
+                                    }}
+                                    weekIndex={0}
+                                    dayIndex={index}
+                                />
+                            ))}
+                            {weeks[0]?.contributionDays.map((day: any, dayIndex: number) => (
+                                <DayContribution
+                                    key={`0-${dayIndex}`}
+                                    day={day}
+                                    weekIndex={0}
+                                    dayIndex={dayIndex}
+                                />
+                            ))}
+                        </div>
+
+                        {/* Remaining weeks */}
+                        {weeks.slice(1).map((week: any, weekIndex: number) => (
+                            <div key={weekIndex + 1} className='flex flex-col gap-1'>
+                                {week.contributionDays.map((day: any, dayIndex: number) => (
+                                    <DayContribution
+                                        key={`${weekIndex + 1}-${dayIndex}`}
+                                        day={day}
+                                        weekIndex={weekIndex + 1}
+                                        dayIndex={dayIndex}
+                                    />
+                                ))}
+                            </div>
+                        ))}
+                    </>
+                )
+                    : (weeks.map((_: any, weekIndex: number) => (
+                        <div key={weekIndex} className='flex flex-col gap-1'>
+                            {[...Array(7)].map((_, dayIndex) => (
+                                <div
+                                    key={`${weekIndex}-${dayIndex}`}
+                                    className="w-2 h-2 sm:w-3 sm:h-3 xs:w-2 rounded-xs"
+                                    style={{
+                                        backgroundColor: styles[darkMode ? 'dark' : 'light'].zero,
+                                    }}
+                                />
+                            ))}
+                        </div>
+                    ))
+                    )
+                }
+            </div>
+        )
+    }
+
+
     // if (loading) return <p className='text-black dark:text-white'>Loading...</p>;
     if (error) return <p className='text-red-500 dark:text-red-400'>Error: {error.message}</p>;
 
-    var weeks = [];
+    var weeks = [] as any;
     if (loading) {
         weeks = [...Array(53)];
     } else {
         weeks = data.user.contributionsCollection.contributionCalendar.weeks;
     }
+
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov',
         'Dec']
 
@@ -193,46 +273,8 @@ function GHChart({ username, className, fromDate, toDate, year }: { username: st
 
                 <div className='w-full overflow-x-auto'>
                     <div className='inline-block w-full pr-2'>
-                        <div className='pl-2 flex gap-8 sm:gap-10 md:gap-10 lg:gap-8'>
-                            {months.map((month, index) => (
-                                <div key={index} className='w-10 text-xs sm:text-lg dark:text-white'>
-                                    {month}
-                                </div>
-                            ))}
-                        </div>
-                        {(
-                            <div className='flex gap-1 rounded-md p-2'>
-                                {!loading ? (
-                                    weeks.map((week: any, weekIndex: number) => (
-                                        <div key={weekIndex} className='flex flex-col gap-1'>
-                                            {week.contributionDays.map((day: any, dayIndex: number) => (
-                                                <DayContribution
-                                                    key={`${weekIndex}-${dayIndex}`}
-                                                    day={day}
-                                                    weekIndex={weekIndex}
-                                                    dayIndex={dayIndex}
-                                                />
-                                            ))}
-                                        </div>
-                                    ))
-                                )
-                                    : (weeks.map((_: any, weekIndex: number) => (
-                                        <div key={weekIndex} className='flex flex-col gap-1'>
-                                            {[...Array(7)].map((_, dayIndex) => (
-                                                <div
-                                                    key={`${weekIndex}-${dayIndex}`}
-                                                    className="w-2 h-2 sm:w-3 sm:h-3 xs:w-2 rounded-xs"
-                                                    style={{
-                                                        backgroundColor: styles[darkMode ? 'dark' : 'light'].zero,
-                                                    }}
-                                                />
-                                            ))}
-                                        </div>
-                                    ))
-                                    )
-                                }
-                            </div>
-                        )}
+                        <MonthRow />
+                        <ContributonMatrix />
                     </div>
                 </div>
             </div>

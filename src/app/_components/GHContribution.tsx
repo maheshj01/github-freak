@@ -2,6 +2,7 @@ import { TooltipProvider, TooltipTrigger } from "@radix-ui/react-tooltip";
 import { useTheme } from "../context/AppThemeProvider";
 import { Tooltip, TooltipContent } from "./tooltip";
 import GHLegend from "./GHLegend";
+import { useAppDispatch, useAppSelector } from "../hooks/Legend";
 
 interface GHContributionProps {
     username: string;
@@ -13,37 +14,27 @@ interface GHContributionProps {
 }
 const GHContribution: React.FC<GHContributionProps> = ({ username, data, loading, error, title, className }) => {
     const { theme } = useTheme();
-
     const darkMode = theme.mode === 'dark';
-    const styles = {
-        dark: {
-            zero: 'rgba(255,255,255,0.1)',
-        },
-        light: {
-            zero: 'rgba(0,0,0,0.1)',
-        }
-    }
-
-
-    function getContributionColor(count: number, day: any) {
-        if (count === 0) {
-            return styles[darkMode ? 'dark' : 'light'].zero;
-        }
-        return day.color;
-    }
+    const legendColors = useAppSelector((state) => state.legend.legendColors);
 
     function DayContribution(props: { day: any, weekIndex: number, dayIndex: number }) {
         const { day, weekIndex, dayIndex } = props;
+        var bgColor = legendColors[0];
+        if (day.contributionCount > 0 && day.contributionCount < 5) {
+            bgColor = legendColors[1]
+        } else if (day.contributionCount >= 5 && day.contributionCount < 10) {
+            bgColor = legendColors[2]
+        }
+        else if (day.contributionCount >= 10) {
+            bgColor = legendColors[3]
+        }
         return (
             <TooltipProvider>
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <div
                             key={`${weekIndex}-${dayIndex}`}
-                            className="w-2 h-2 sm:w-3 sm:h-3 xs:w-2 rounded-xs"
-                            style={{
-                                backgroundColor: getContributionColor(day.contributionCount, day),
-                            }}
+                            className={`w-2 h-2 sm:w-3 sm:h-3 xs:w-2 rounded-xs ${bgColor}`}
                         />
                     </TooltipTrigger>
                     <TooltipContent>
@@ -94,7 +85,6 @@ const GHContribution: React.FC<GHContributionProps> = ({ username, data, loading
                                     key={`${index + 1}-${index}`}
                                     day={{
                                         contributionCount: 0,
-                                        color: styles[darkMode ? 'dark' : 'light'].zero,
                                         date: '',
                                     }}
                                     weekIndex={0}
@@ -131,10 +121,7 @@ const GHContribution: React.FC<GHContributionProps> = ({ username, data, loading
                             {[...Array(7)].map((_, dayIndex) => (
                                 <div
                                     key={`${weekIndex}-${dayIndex}`}
-                                    className="w-2 h-2 sm:w-3 sm:h-3 xs:w-2 rounded-xs"
-                                    style={{
-                                        backgroundColor: styles[darkMode ? 'dark' : 'light'].zero,
-                                    }}
+                                    className={`w-2 h-2 sm:w-3 sm:h-3 xs:w-2 rounded-xs ${legendColors[0]}`}
                                 />
                             ))}
                         </div>
