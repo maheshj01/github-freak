@@ -11,7 +11,6 @@ import ErrorRoute from './error';
 import GHStats from './app/routes/GHStats';
 import App from './app/routes/App';
 import { ThemeSwitcher } from './app/_components/ThemeSwitcher';
-import YearInGithub from './app/routes/YearInGithub';
 import AnimatedButton from './app/_components/AnimatedButton';
 import { Provider } from 'react-redux';
 import { store } from './app/redux/store';
@@ -57,10 +56,6 @@ const router = createBrowserRouter([
         element: <GHStats />,
       },
     ],
-  },
-  {
-    path: "/year-in-github",
-    element: <YearInGithub />,
   },
 ]);
 
