@@ -14,7 +14,7 @@ import { ThemeSwitcher } from './app/_components/ThemeSwitcher';
 import YearInGithub from './app/routes/YearInGithub';
 import AnimatedButton from './app/_components/AnimatedButton';
 import { Provider } from 'react-redux';
-import { store } from './redux/store';
+import { store } from './app/redux/store';
 
 
 const Layout = () => {

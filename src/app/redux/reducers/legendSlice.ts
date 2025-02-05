@@ -12,11 +12,13 @@ const colorThemes: Record<string, string[]> = {
 interface LegendState {
     currentTheme: string;
     legendColors: string[];
+    numberOfYears?: number;
 }
 
 const initialState: LegendState = {
     currentTheme: 'green',
     legendColors: colorThemes.green,
+    numberOfYears: 5,
 };
 
 const legendSlice = createSlice({
@@ -28,9 +30,12 @@ const legendSlice = createSlice({
             state.currentTheme = theme;
             state.legendColors = colorThemes[theme] || state.legendColors;
         },
+        setNumberOfYears: (state, action: PayloadAction<number>) => {
+            state.numberOfYears = action.payload;
+        }
     },
 });
 
-export const { setLegendTheme } = legendSlice.actions;
+export const { setLegendTheme, setNumberOfYears } = legendSlice.actions;
 export const legendReducer = legendSlice.reducer;
 export { colorThemes };

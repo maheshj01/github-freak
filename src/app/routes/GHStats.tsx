@@ -23,6 +23,8 @@ import { TooltipProvider } from '../_components/tooltip';
 import GHAreaChart from '../_components/AreaChart';
 import Analytics from '../services/Analytics';
 import LegendThemeSelector from '../_components/LegendThemeSelector';
+import { useAppDispatch, useAppSelector } from '../hooks/Legend';
+import { setNumberOfYears } from '../redux/reducers/legendSlice';
 
 interface GithubContribution {
     maxStreak: number;
@@ -46,8 +48,9 @@ export default function GHStats() {
     const { loading, error, data } = useGitHubContributionsQuery(searchUsername, fromDate, toDate);
     console.log(data)
     const navigate = useNavigate();
-    const [tabValue, setTabValue] = useState('stats');
-
+    const [tabValue, setTabValue] = useState<string>('stats');
+    const numberOfYears = useAppSelector((state) => state.legend.numberOfYears) || 5;
+    const dispatch = useAppDispatch();
     useEffect(() => {
         if (username) {
             setInputUsername(username);
@@ -175,8 +178,20 @@ export default function GHStats() {
                             onValueChange={setTabValue}
                             defaultValue="stats" className="">
                             <div className='flex justify-between items-center w-full max-w-screen-lg mx-auto px-4'>
-                                <LegendThemeSelector />
-                                <div className='flex justify-center flex-grow'>
+                                {tabValue === 'graphs' ? (<div className='flex gap-2'>
+                                    <LegendThemeSelector />
+                                    <p className='text-xl font-bold'>Years</p>
+                                    <DropdownMenuButton
+                                        onClick={(year) => {
+                                            dispatch(setNumberOfYears(year));
+                                        }}
+                                        className='text-md md:text-xl text-xl font-bold'
+                                        options={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+                                        selected={numberOfYears}
+                                    />
+                                </div>
+                                ) : (<div />)}
+                                < div className='flex justify-center flex-grow'>
                                     <TabsList className='w-full max-w-[400px]'>
                                         <TabsTrigger value="stats" className='flex-grow'>Github Stats</TabsTrigger>
                                         <TabsTrigger value="graphs" className='flex-grow'>Contribution Graphs(5 years)</TabsTrigger>
@@ -243,7 +258,7 @@ export default function GHStats() {
                                 <div id='FiveYearChart' className={`my-4 flex flex-col`}>
                                     <GHLegend username={username!} />
                                     {
-                                        [0, 1, 2, 3, 4].map((year) => {
+                                        [...Array(numberOfYears)].map((_, year) => {
                                             const fDate = new Date(currentYear - year, 0, 1);
                                             const tDate = new Date(currentYear - year, 11, 31);
                                             return (
@@ -261,11 +276,14 @@ export default function GHStats() {
                             </TabsContent>
                         </Tabs>
                     </div>
-                </motion.div>
-            )}
-            {!searchReady && (
-                <Loading />
-            )}
-        </div>
+                </motion.div >
+            )
+            }
+            {
+                !searchReady && (
+                    <Loading />
+                )
+            }
+        </div >
     );
 }

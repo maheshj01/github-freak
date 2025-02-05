@@ -1,4 +1,4 @@
-import { colorThemes, setLegendTheme } from 'src/redux/reducers/legendSlice';
+import { colorThemes, setLegendTheme } from 'src/app/redux/reducers/legendSlice';
 import React from 'react';
 import { useAppDispatch } from '../hooks/Legend';
 
