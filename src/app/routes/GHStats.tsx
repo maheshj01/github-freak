@@ -177,18 +177,22 @@ export default function GHStats() {
                         <Tabs
                             onValueChange={setTabValue}
                             defaultValue="stats" className="">
-                            <div className='flex justify-between items-center w-full max-w-screen-lg mx-auto px-4'>
+                            <div className='flex flex-wrap justify-between items-center w-full max-w-screen-lg mx-auto px-4'>
                                 {tabValue === 'graphs' ? (<div className='flex gap-2'>
-                                    <LegendThemeSelector />
-                                    <p className='text-xl font-bold'>Years</p>
-                                    <DropdownMenuButton
-                                        onClick={(year) => {
-                                            dispatch(setNumberOfYears(year));
-                                        }}
-                                        className='text-md md:text-xl text-xl font-bold'
-                                        options={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-                                        selected={numberOfYears}
-                                    />
+                                    <div className='flex flex-col justify-center'>
+                                        <LegendThemeSelector />
+                                        <div className='flex'>
+                                            <p className='text-xl font-bold'>Years</p>
+                                            <DropdownMenuButton
+                                                onClick={(year) => {
+                                                    dispatch(setNumberOfYears(year));
+                                                }}
+                                                className='text-md md:text-xl text-xl font-bold'
+                                                options={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+                                                selected={numberOfYears}
+                                            />
+                                        </div>
+                                    </div>
                                 </div>
                                 ) : (<div />)}
                                 < div className='flex justify-center flex-grow'>
