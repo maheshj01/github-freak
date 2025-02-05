@@ -11,14 +11,13 @@ import ErrorRoute from './error';
 import GHStats from './app/routes/GHStats';
 import App from './app/routes/App';
 import { ThemeSwitcher } from './app/_components/ThemeSwitcher';
-import AnimatedButton from './app/_components/AnimatedButton';
 import { Provider } from 'react-redux';
 import { store } from './app/redux/store';
 
 
 const Layout = () => {
   const date = new Date();
-  const isLastWeekOfYear = date.getMonth() === 11 && date.getDate() >= 24;
+  // const isLastWeekOfYear = date.getMonth() === 11 && date.getDate() >= 24;
   return (
     <div className='relative'>
       <div className="fixed top-5 right-2 flex items-center w-full">
@@ -26,14 +25,14 @@ const Layout = () => {
 
         </div>
         <div />
-        <div className=' grow flex justify-end'>
+        {/* <div className=' grow flex justify-end'>
           {isLastWeekOfYear && <AnimatedButton onClick={() => {
             window.location.href = '/year-in-github';
           }}>
             Year in Github
           </AnimatedButton>
           }
-        </div>
+        </div> */}
         <ThemeSwitcher />
       </div>
       <Outlet />
