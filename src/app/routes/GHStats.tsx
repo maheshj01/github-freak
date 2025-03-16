@@ -25,6 +25,7 @@ import Analytics from '../services/Analytics';
 import LegendThemeSelector from '../_components/LegendThemeSelector';
 import { useAppDispatch, useAppSelector } from '../hooks/Legend';
 import { setNumberOfYears } from '../redux/reducers/legendSlice';
+import ErrorMessage from '../_components/ErrorMessage';
 
 interface GithubContribution {
     maxStreak: number;
@@ -171,18 +172,7 @@ export default function GHStats() {
                     className="container mx-auto px-4 py-4"
                 >
                     {userError ? (
-                        <motion.div
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="flex flex-col items-center justify-center p-8 rounded-lg bg-red-50 dark:bg-red-900/20"
-                        >
-                            <FaExclamationCircle className="text-6xl text-red-500 dark:text-red-400 mb-4" />
-                            <h2 className="text-2xl font-bold text-red-700 dark:text-red-300 mb-2">User Not Found</h2>
-                            <p className="text-red-600 dark:text-red-200 text-center">
-                                We couldn't find a GitHub user with the username "{searchUsername}". 
-                                Please check the spelling and try again.
-                            </p>
-                        </motion.div>
+                        <ErrorMessage username={searchUsername} />
                     ) : (
                         <>
                             <div className='flex justify-center'>
