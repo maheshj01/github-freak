@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { FaDownload, FaGithub } from "react-icons/fa";
+import { FaDownload, FaGithub, FaExclamationCircle } from "react-icons/fa";
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import GHContribution from '../_components/GHContribution';
@@ -25,6 +25,7 @@ import Analytics from '../services/Analytics';
 import LegendThemeSelector from '../_components/LegendThemeSelector';
 import { useAppDispatch, useAppSelector } from '../hooks/Legend';
 import { setNumberOfYears } from '../redux/reducers/legendSlice';
+import ErrorMessage from '../_components/ErrorMessage';
 
 interface GithubContribution {
     maxStreak: number;
@@ -44,7 +45,7 @@ export default function GHStats() {
     const fromDate = new Date(graphYear, 0, 1);
     const toDate = new Date(graphYear, 11, 31);
     const [contributionStats, setContributionStats] = React.useState<GithubContribution | null>(null);
-    const { user } = useGitHubUser(searchUsername);
+    const { user, error: userError } = useGitHubUser(searchUsername);
     const { loading, error, data } = useGitHubContributionsQuery(searchUsername, fromDate, toDate);
     console.log(data)
     const navigate = useNavigate();
@@ -170,116 +171,122 @@ export default function GHStats() {
                     transition={{ delay: 0.5 }}
                     className="container mx-auto px-4 py-4"
                 >
-                    <div className='flex justify-center'>
-                        {user && <GHProfileCard user={user} />}
-                    </div>
-                    <div className='py-8'>
-                        <Tabs
-                            onValueChange={setTabValue}
-                            defaultValue="stats" className="">
-                            <div className='flex flex-wrap justify-between items-center w-full max-w-screen-lg mx-auto px-4'>
-                                {tabValue === 'graphs' ? (<div className='flex gap-2'>
-                                    <div className='flex flex-col justify-center'>
-                                        <LegendThemeSelector />
-                                        <div className='flex'>
-                                            <p className='text-xl font-bold'>Years</p>
+                    {userError ? (
+                        <ErrorMessage username={searchUsername} />
+                    ) : (
+                        <>
+                            <div className='flex justify-center'>
+                                {user && <GHProfileCard user={user} />}
+                            </div>
+                            <div className='py-8'>
+                                <Tabs
+                                    onValueChange={setTabValue}
+                                    defaultValue="stats" className="">
+                                    <div className='flex flex-wrap justify-between items-center w-full max-w-screen-lg mx-auto px-4'>
+                                        {tabValue === 'graphs' ? (<div className='flex gap-2'>
+                                            <div className='flex flex-col justify-center'>
+                                                <LegendThemeSelector />
+                                                <div className='flex'>
+                                                    <p className='text-xl font-bold'>Years</p>
+                                                    <DropdownMenuButton
+                                                        onClick={(year) => {
+                                                            dispatch(setNumberOfYears(year));
+                                                        }}
+                                                        className='text-md md:text-xl text-xl font-bold'
+                                                        options={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+                                                        selected={numberOfYears}
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        ) : (<div />)}
+                                        < div className='flex justify-center flex-grow'>
+                                            <TabsList className='w-full max-w-[400px]'>
+                                                <TabsTrigger value="stats" className='flex-grow'>Github Stats</TabsTrigger>
+                                                <TabsTrigger value="graphs" className='flex-grow'>Contribution Graphs(5 years)</TabsTrigger>
+                                            </TabsList>
+                                        </div>
+                                        {tabValue === 'graphs' && (<div className='w-10 flex justify-end'>
+                                            <TooltipProvider>
+                                                <Tooltip>
+                                                    <TooltipTrigger asChild>
+                                                        <FaDownload
+                                                            onClick={() => downloadImage()}
+                                                            className='text-3xl cursor-pointer'
+                                                            aria-label="Download Image"
+                                                        />
+                                                    </TooltipTrigger>
+                                                    <TooltipContent>
+                                                        {`Download Image`}
+                                                    </TooltipContent>
+                                                </Tooltip>
+                                            </TooltipProvider>
+                                        </div>
+                                        )}
+                                    </div>
+                                    <TabsContent value="stats" className='min-h-fit'>
+                                        <div className='flex space-x-2 py-2 mt-6 items-center'>
+                                            {user && <p className="text-2xl font-bold">GitHub Stats</p>}
                                             <DropdownMenuButton
-                                                onClick={(year) => {
-                                                    dispatch(setNumberOfYears(year));
-                                                }}
-                                                className='text-md md:text-xl text-xl font-bold'
-                                                options={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-                                                selected={numberOfYears}
+                                                onClick={setGraphYear}
+                                                className='text-md md:text-2xl text-2xl font-bold'
+                                                options={[currentYear, currentYear - 1, currentYear - 2, currentYear - 3, currentYear - 4]}
+                                                selected={graphYear.toString()}
                                             />
                                         </div>
-                                    </div>
-                                </div>
-                                ) : (<div />)}
-                                < div className='flex justify-center flex-grow'>
-                                    <TabsList className='w-full max-w-[400px]'>
-                                        <TabsTrigger value="stats" className='flex-grow'>Github Stats</TabsTrigger>
-                                        <TabsTrigger value="graphs" className='flex-grow'>Contribution Graphs(5 years)</TabsTrigger>
-                                    </TabsList>
-                                </div>
-                                {tabValue === 'graphs' && (<div className='w-10 flex justify-end'>
-                                    <TooltipProvider>
-                                        <Tooltip>
-                                            <TooltipTrigger asChild>
-                                                <FaDownload
-                                                    onClick={() => downloadImage()}
-                                                    className='text-3xl cursor-pointer'
-                                                    aria-label="Download Image"
-                                                />
-                                            </TooltipTrigger>
-                                            <TooltipContent>
-                                                {`Download Image`}
-                                            </TooltipContent>
-                                        </Tooltip>
-                                    </TooltipProvider>
-                                </div>
-                                )}
+                                        <div className='flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0'>
+                                            <GHContribution
+                                                username={searchUsername}
+                                                data={data}
+                                                loading={loading}
+                                                error={error}
+                                                className='rounded-lg'
+                                                title={`Contribution Chart`}
+                                            />
+                                            <StreakCard
+                                                isCurrentYear={currentYear === graphYear}
+                                                currentStreak={contributionStats?.currentStreak}
+                                                maxStreak={contributionStats?.maxStreak}
+                                                activeDays={contributionStats?.activeDays}
+                                                totalContributions={contributionStats?.totalContributions}
+                                            />
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
+                                            <WeeklyChart
+                                                year={graphYear}
+                                                data={data} />
+                                            <MonthlyContributionChart
+                                                year={graphYear}
+                                                data={data} />
+                                        </div>
+                                        <GHAreaChart
+                                            year={graphYear}
+                                            data={data} />
+                                    </TabsContent>
+                                    <TabsContent value="graphs" className='flex items-center justify-center'>
+                                        <div id='FiveYearChart' className={`my-4 flex flex-col`}>
+                                            <GHLegend username={username!} />
+                                            {
+                                                [...Array(numberOfYears)].map((_, year) => {
+                                                    const fDate = new Date(currentYear - year, 0, 1);
+                                                    const tDate = new Date(currentYear - year, 11, 31);
+                                                    return (
+                                                        <div className='flex flex-col items-center justify-center'>
+                                                            <GHChart
+                                                                username={searchUsername}
+                                                                fromDate={fDate}
+                                                                toDate={tDate}
+                                                                year={currentYear - year} />
+                                                        </div>
+                                                    );
+                                                })
+                                            }
+                                        </div>
+                                    </TabsContent>
+                                </Tabs>
                             </div>
-                            <TabsContent value="stats" className='min-h-fit'>
-                                <div className='flex space-x-2 py-2 mt-6 items-center'>
-                                    {user && <p className="text-2xl font-bold">GitHub Stats</p>}
-                                    <DropdownMenuButton
-                                        onClick={setGraphYear}
-                                        className='text-md md:text-2xl text-2xl font-bold'
-                                        options={[currentYear, currentYear - 1, currentYear - 2, currentYear - 3, currentYear - 4]}
-                                        selected={graphYear.toString()}
-                                    />
-                                </div>
-                                <div className='flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0'>
-                                    <GHContribution
-                                        username={searchUsername}
-                                        data={data}
-                                        loading={loading}
-                                        error={error}
-                                        className='rounded-lg'
-                                        title={`Contribution Chart`}
-                                    />
-                                    <StreakCard
-                                        isCurrentYear={currentYear === graphYear}
-                                        currentStreak={contributionStats?.currentStreak}
-                                        maxStreak={contributionStats?.maxStreak}
-                                        activeDays={contributionStats?.activeDays}
-                                        totalContributions={contributionStats?.totalContributions}
-                                    />
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
-                                    <WeeklyChart
-                                        year={graphYear}
-                                        data={data} />
-                                    <MonthlyContributionChart
-                                        year={graphYear}
-                                        data={data} />
-                                </div>
-                                <GHAreaChart
-                                    year={graphYear}
-                                    data={data} />
-                            </TabsContent>
-                            <TabsContent value="graphs" className='flex items-center justify-center'>
-                                <div id='FiveYearChart' className={`my-4 flex flex-col`}>
-                                    <GHLegend username={username!} />
-                                    {
-                                        [...Array(numberOfYears)].map((_, year) => {
-                                            const fDate = new Date(currentYear - year, 0, 1);
-                                            const tDate = new Date(currentYear - year, 11, 31);
-                                            return (
-                                                <div className='flex flex-col items-center justify-center'>
-                                                    <GHChart
-                                                        username={searchUsername}
-                                                        fromDate={fDate}
-                                                        toDate={tDate}
-                                                        year={currentYear - year} />
-                                                </div>
-                                            );
-                                        })
-                                    }
-                                </div>
-                            </TabsContent>
-                        </Tabs>
-                    </div>
+                        </>
+                    )}
                 </motion.div >
             )
             }

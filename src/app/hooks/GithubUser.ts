@@ -22,6 +22,7 @@ export const useGitHubUser = (username: string) => {
 
                 const userData = await response.json();
                 setUser(userData);
+                setError(null);
             } catch (err: any) {
                 setError(err);
             } finally {
