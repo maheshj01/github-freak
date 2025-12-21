@@ -1,0 +1,28 @@
+{
+   "files.autoSaveDelay": 3000,
+   "editor.formatOnSave": true,
+   "[typescript]": {
+      "editor.defaultFormatter": "vscode.typescript-language-features"
+   },
+   "[typescriptreact]": {
+      "editor.defaultFormatter": "vscode.typescript-language-features"
+   },
+   "editor.codeActionsOnSave": {
+      "source.organizeImports": "always",
+      "source.fixAll": "always",
+      "source.fixAll.eslint": "explicit",
+      "source.addMissingImports.ts": "explicit"
+   },
+   "editor.defaultFormatter": "esbenp.prettier-vscode",
+   "typescript.tsserver.experimental.enableProjectDiagnostics": true,
+   "typescript.tsdk": "functions/node_modules/typescript/lib",
+   "eslint.workingDirectories": [
+      {
+         "mode": "auto"
+      },
+      {
+         "pattern": "functions/"
+      }
+   ],
+   "java.configuration.updateBuildConfiguration": "interactive",
+}
