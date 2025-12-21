@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import React from 'react';
 import { FaGithub } from 'react-icons/fa';
+import AnimatedButton from '../_components/AnimatedButton';
 import { useTheme } from '../context/AppThemeProvider';
 
 
@@ -84,6 +85,19 @@ const YearInIntro: React.FC<YearInContentProps> = ({ selectedYear, username }) =
             >
                 Discover your GitHub journey. See your contributions, streaks, and coding highlights.
             </motion.p>
+
+            <motion.div
+                className="flex items-center justify-center gap-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.7 }}
+            >
+                <AnimatedButton onClick={() => { }}>
+                    <div className='flex items-center justify-center gap-2 min-w-32'>
+                        <p>Start</p>
+                    </div>
+                </AnimatedButton>
+            </motion.div>
         </motion.div>
     );
 };
