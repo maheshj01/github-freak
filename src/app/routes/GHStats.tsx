@@ -150,11 +150,15 @@ export default function GHStats() {
                 animate={{ height: '10rem' }}
                 transition={{ duration: 0.5 }}>
                 <form onSubmit={handleSubmit} className="w-full max-w-md px-4">
-                    <div className="flex items-center justify-center mb-8">
+                    <div className="flex items-center justify-center mb-8 cursor-pointer" onClick={() => {
+                        navigate('/');
+                    }}>
                         <FaGithub className="text-6xl" />
-                        <div className='hidden md:block
-                        
-                        '><p className='text-2xl mx-6 font-mono' > Hello Freaks!</p></div>
+                        <div className='hidden md:block'>
+                            <p className='text-2xl mx-6 font-mono'>
+                                Hello Freaks!
+                            </p>
+                        </div>
                     </div>
                     <Input
                         placeholder="Enter your Github username"
