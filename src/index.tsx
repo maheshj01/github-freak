@@ -11,16 +11,15 @@ import App from './app/routes/App';
 import GHStats from './app/routes/GHStats';
 import YearInGithub from './app/routes/YearInGithub';
 import { client } from './app/services/ApolloClient';
+import Constants from './constants';
 import ErrorRoute from './error';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
-const kDaysAfterInLastMonth = 1;
-
 const Layout = () => {
   const date = new Date();
   const currentYear = date.getFullYear();
-  const isLastWeekOfYear = date.getMonth() === 11 && date.getDate() >= kDaysAfterInLastMonth;
+  const isLastWeekOfYear = date.getMonth() === 11 && date.getDate() >= Constants.kDaysAfterInLastMonth;
   const isBaseRoute = window.location.pathname === '/';
   const isYearRoute = window.location.pathname.startsWith('/year');
   const showYearButton = isLastWeekOfYear && !isBaseRoute && !isYearRoute;

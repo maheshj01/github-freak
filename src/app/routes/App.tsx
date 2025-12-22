@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion';
 import React, { useEffect, useState } from 'react';
 import { FaChevronRight, FaGithub } from "react-icons/fa";
+import Constants from '../../constants';
 import AnimatedButton from '../_components/AnimatedButton';
 import { Input } from '../_components/input';
 import AutoscrollingTopRepos from '../_components/top-repositories';
@@ -42,9 +43,11 @@ export default function App() {
     );
   };
 
-  const currentYear = new Date().getFullYear();
   const isDark = theme.mode === 'dark';
-
+  const date = new Date();
+  const currentYear = date.getFullYear();
+  const isLastWeekOfYear = date.getMonth() === 11 && date.getDate() >= Constants.kDaysAfterInLastMonth;
+  const showYearButton = isLastWeekOfYear;
   return (
     <div className={`min-h-screen bg-gradient ${theme.mode === 'dark' ? 'theme-aqua-dark' : 'theme-aqua-light'} z-50`}>
       <AutoscrollingTopRepos />
@@ -73,7 +76,7 @@ export default function App() {
         </form>
         <div className="mt-12" />
         {/* Year in GitHub CTA */}
-        <motion.div
+        {showYearButton && <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.7 }}
@@ -91,7 +94,7 @@ export default function App() {
               <FaChevronRight className="text-sm" />
             </div>
           </AnimatedButton>
-        </motion.div>
+        </motion.div>}
       </motion.div>
     </div >
   );
