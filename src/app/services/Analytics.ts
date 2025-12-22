@@ -42,6 +42,32 @@ class Analytics {
     public logThemeChange(theme: string): void {
         this.logEvent('theme_change', { theme });
     }
+
+    // Year in GitHub analytics
+    public logYearInGithubSearch(username: string, year: number): void {
+        this.logEvent('year_in_github_search', {
+            username,
+            year,
+            dateTime: new Date().toISOString()
+        });
+    }
+
+    public logYearInGithubDownload(username: string, year: number): void {
+        this.logEvent('year_in_github_download', {
+            username,
+            year,
+            dateTime: new Date().toISOString()
+        });
+    }
+
+    public logYearInGithubShare(username: string, year: number, platform: string): void {
+        this.logEvent('year_in_github_share', {
+            username,
+            year,
+            platform,
+            dateTime: new Date().toISOString()
+        });
+    }
 }
 
 export default Analytics.getInstance();
