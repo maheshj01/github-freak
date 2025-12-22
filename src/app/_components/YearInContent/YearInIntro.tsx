@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FaChevronRight, FaGithub } from 'react-icons/fa';
 import { useTheme } from '../../context/AppThemeProvider';
+import { useLazyGitHubContributionsQuery } from '../../context/GHContext';
 import { useYearInGithubStore } from '../../store/yearInGithubStore';
 import AnimatedButton from '../AnimatedButton';
 
@@ -13,28 +14,127 @@ interface YearInIntroProps {
 const YearInIntro: React.FC<YearInIntroProps> = ({ selectedYear, onStart }) => {
     const { theme } = useTheme();
     const isDark = theme.mode === 'dark';
-    const { username, setUsername } = useYearInGithubStore();
+    const { username, setUsername, setStats, setLoading, setGithubRawData } = useYearInGithubStore();
     const [inputUsername, setInputUsername] = React.useState('');
+    const { fetchContributions, loading, error, data } = useLazyGitHubContributionsQuery();
+
+    const fromDate = new Date(selectedYear, 0, 1);
+    const toDate = new Date(selectedYear, 11, 31);
+
+    // Analyze data when it's available
+    useEffect(() => {
+        if (data && data.user) {
+            analyzeData(data);
+        }
+    }, [data]);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (inputUsername.trim()) {
-            setUsername(inputUsername);
-            // Navigate to the year page with username
-            window.location.href = `/year/${selectedYear}/${inputUsername.trim()}`;
+        handleStart();
+    };
+
+    const handleStart = async () => {
+        const targetUsername = username || inputUsername.trim();
+        if (!targetUsername) return;
+
+        // Set username in store if not already set
+        if (!username) {
+            setUsername(targetUsername);
+        }
+
+        // Set loading state
+        setLoading(true);
+
+        try {
+            // Fetch contributions and PR count in parallel
+            const [result, prCount] = await Promise.all([
+                fetchContributions(targetUsername, fromDate, toDate),
+                fetchPullRequests(targetUsername)
+            ]);
+
+            if (result.data && result.data.user) {
+                await analyzeData(result.data, prCount);
+                setGithubRawData(result.data);
+                onStart();
+            }
+        } catch (err) {
+            console.error('Error fetching contributions:', err);
+        } finally {
+            setLoading(false);
         }
     };
 
-    const handleStart = () => {
-        if (username) {
-            setUsername(inputUsername);
-            onStart();
-            return;
+    // Fetch pull requests for the year using GitHub Search API
+    const fetchPullRequests = async (targetUsername: string): Promise<number> => {
+        try {
+            const startDate = `${selectedYear}-01-01`;
+            const endDate = `${selectedYear}-12-31`;
+            const query = `author:${targetUsername}+type:pr+created:${startDate}..${endDate}`;
+            const url = `https://api.github.com/search/issues?q=${query}&per_page=1`;
+
+            const response = await fetch(url);
+            if (!response.ok) {
+                console.error('Failed to fetch PRs:', response.statusText);
+                return 0;
+            }
+
+            const data = await response.json();
+            return data.total_count || 0;
+        } catch (err) {
+            console.error('Error fetching pull requests:', err);
+            return 0;
         }
-        if (inputUsername.trim()) {
-            setUsername(inputUsername);
-            onStart();
+    };
+
+    const analyzeData = async (queryData: any, prCount: number = 0) => {
+        if (!queryData?.user?.contributionsCollection?.contributionCalendar) return;
+
+        const calendar = queryData.user.contributionsCollection.contributionCalendar;
+        const weeks = calendar.weeks;
+        const allDays = weeks.flatMap((week: any) => week.contributionDays);
+
+        // Calculate stats
+        let totalContributions = calendar.totalContributions;
+        let activeDays = 0;
+        let maxStreak = 0;
+        let tempStreak = 0;
+        const dayOfWeekCounts: { [key: number]: number } = {};
+
+        for (const day of allDays) {
+            if (day.contributionCount > 0) {
+                activeDays++;
+                tempStreak++;
+                maxStreak = Math.max(maxStreak, tempStreak);
+
+                // Track most active day of week
+                dayOfWeekCounts[day.weekday] = (dayOfWeekCounts[day.weekday] || 0) + day.contributionCount;
+            } else {
+                tempStreak = 0;
+            }
         }
+
+        // Find most active day
+        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        let mostActiveDay = 'Monday';
+        let maxDayCount = 0;
+        for (const [day, count] of Object.entries(dayOfWeekCounts)) {
+            if (count > maxDayCount) {
+                maxDayCount = count;
+                mostActiveDay = dayNames[parseInt(day)];
+            }
+        }
+
+        // Update store with analyzed stats
+        setStats({
+            totalCommits: totalContributions,
+            totalPRs: prCount,
+            activeDays,
+            longestStreak: maxStreak,
+            mostActiveDay,
+            topLanguage: 'TypeScript', // Placeholder - would need separate query
+        });
+
+        console.log('Analyzed stats:', { totalContributions, prCount, activeDays, maxStreak, mostActiveDay });
     };
 
     return (
