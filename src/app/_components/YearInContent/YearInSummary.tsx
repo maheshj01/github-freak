@@ -199,7 +199,7 @@ const YearInSummary: React.FC<YearInSummaryProps> = ({ stats, selectedYear }) =>
 
             <motion.div
                 ref={shareButtonsRef}
-                className="my-6"
+                className="my-6 relative z-30"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8 }}
