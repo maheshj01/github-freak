@@ -99,17 +99,17 @@ const YearInSummary: React.FC<YearInSummaryProps> = ({ stats, selectedYear }) =>
 
             {/* Title */}
             <motion.h2
-                className={`text-2xl md:text-3xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-violet-400 via-pink-400 to-cyan-400`}
+                className={`text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-400 via-pink-400 to-cyan-400`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-            >
+                transition={{ delay: 0.3 }}>
                 Your {selectedYear} Wrapped 🎉
             </motion.h2>
+            <GHGraph />
 
             {/* Stats Grid */}
             <motion.div
-                className="grid grid-cols-2 gap-4 w-full"
+                className="grid grid-cols-2 gap-4 w-full mt-6"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
@@ -163,3 +163,84 @@ const YearInSummary: React.FC<YearInSummaryProps> = ({ stats, selectedYear }) =>
 };
 
 export default YearInSummary;
+
+interface GHGraphProps { }
+
+interface ContributionDay {
+    date: string;
+    contributionCount: number;
+    color: string;
+    weekday: number;
+}
+
+interface ContributionWeek {
+    contributionDays: ContributionDay[];
+}
+
+const GHGraph: React.FC<GHGraphProps> = () => {
+    const { githubRawData } = useYearInGithubStore();
+    const { theme } = useTheme();
+    const isDark = theme.mode === 'dark';
+
+    if (!githubRawData?.user?.contributionsCollection?.contributionCalendar) {
+        return null;
+    }
+
+    const calendar = githubRawData.user.contributionsCollection.contributionCalendar;
+    const weeks: ContributionWeek[] = calendar.weeks;
+    const months = calendar.months;
+
+    // Get contribution level color
+    const getColor = (count: number): string => {
+        if (count === 0) return isDark ? '#161b22' : '#ebedf0';
+        if (count <= 3) return isDark ? '#0e4429' : '#9be9a8';
+        if (count <= 6) return isDark ? '#006d32' : '#40c463';
+        if (count <= 9) return isDark ? '#26a641' : '#30a14e';
+        return isDark ? '#39d353' : '#216e39';
+    };
+
+    return (
+        <motion.div
+            className="w-full mt-6 card bg-white/80 p-4 backdrop-blur-xl border border-gray-200 rounded-lg"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+        >
+            {/* Month labels */}
+            <div className="flex mb-1 text-xs pl-0">
+                <div className="flex w-full justify-between px-1">
+                    {months.slice(0, 12).map((month: { name: string }, i: number) => (
+                        <span
+                            key={i}
+                            className={`${isDark ? 'text-gray-500' : 'text-gray-400'} text-[10px]`}
+                        >
+                            {month.name}
+                        </span>
+                    ))}
+                </div>
+            </div>
+
+            {/* Contribution grid */}
+            <div className="flex gap-[2px] overflow-hidden">
+                {weeks.map((week, weekIndex) => (
+                    <div key={weekIndex} className="flex flex-col gap-[2px]">
+                        {week.contributionDays.map((day, dayIndex) => (
+                            <motion.div
+                                key={dayIndex}
+                                className="w-[8px] h-[8px] rounded-[2px]"
+                                style={{ backgroundColor: getColor(day.contributionCount) }}
+                                initial={{ scale: 0, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                transition={{
+                                    delay: 0.8 + (weekIndex * 0.01),
+                                    duration: 0.2
+                                }}
+                                title={`${day.date}: ${day.contributionCount} contributions`}
+                            />
+                        ))}
+                    </div>
+                ))}
+            </div>
+        </motion.div>
+    );
+};
