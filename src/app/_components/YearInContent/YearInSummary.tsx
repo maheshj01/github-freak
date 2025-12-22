@@ -18,6 +18,7 @@ const YearInSummary: React.FC<YearInSummaryProps> = ({ stats, selectedYear }) =>
     const summaryRef = useRef<HTMLDivElement>(null);
     const shareButtonsRef = useRef<HTMLDivElement>(null);
     const [isCapturing, setIsCapturing] = React.useState(false);
+    const titleRef = useRef<HTMLHeadingElement>(null);
 
     const captureScreenshot = async (): Promise<string | null> => {
         if (!summaryRef.current) return null;
@@ -112,7 +113,7 @@ const YearInSummary: React.FC<YearInSummaryProps> = ({ stats, selectedYear }) =>
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ type: "spring", stiffness: 200, damping: 15 }}
-                className="mb-6"
+                className="my-6"
             >
                 {user?.avatar_url ? (
                     <div className="relative">
@@ -144,13 +145,16 @@ const YearInSummary: React.FC<YearInSummaryProps> = ({ stats, selectedYear }) =>
                 @{user?.login || 'github-user'}
             </motion.p>
 
-            {/* Title */}
+            {/* Title - using solid color since html2canvas doesn't support background-clip: text */}
             <motion.h2
-                className={`text-2xl md:text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-violet-400 via-pink-400 to-cyan-400`}
+                ref={titleRef}
+                className={`text-2xl md:text-3xl font-bold text-purple-600 
+                    `}
+                // ${Constants.clipTextGradient}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 }}>
-                Your {selectedYear} Wrapped 🎉
+                Year in GitHub {selectedYear} 🎉
             </motion.h2>
             <GHGraph />
 
@@ -195,7 +199,7 @@ const YearInSummary: React.FC<YearInSummaryProps> = ({ stats, selectedYear }) =>
 
             <motion.div
                 ref={shareButtonsRef}
-                className="mt-6"
+                className="my-6"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8 }}
