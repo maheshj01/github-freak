@@ -1,6 +1,8 @@
 import { motion } from 'framer-motion';
-import React from 'react';
-import { FaCalendarCheck, FaCode, FaCodeBranch, FaFire, FaGithub, FaLaptopCode, FaTrophy } from 'react-icons/fa';
+import html2canvas from 'html2canvas';
+import React, { useRef } from 'react';
+import { FaCalendarCheck, FaCode, FaCodeBranch, FaDownload, FaFire, FaGithub, FaLaptopCode, FaTrophy } from 'react-icons/fa';
+import { FaXTwitter } from 'react-icons/fa6';
 import { useTheme } from '../../context/AppThemeProvider';
 import { useYearInGithubStore, YearStats } from '../../store/yearInGithubStore';
 
@@ -12,7 +14,52 @@ interface YearInSummaryProps {
 const YearInSummary: React.FC<YearInSummaryProps> = ({ stats, selectedYear }) => {
     const { theme } = useTheme();
     const isDark = theme.mode === 'dark';
-    const { user } = useYearInGithubStore();
+    const { user, username } = useYearInGithubStore();
+    const summaryRef = useRef<HTMLDivElement>(null);
+    const shareButtonsRef = useRef<HTMLDivElement>(null);
+    const [isCapturing, setIsCapturing] = React.useState(false);
+
+    const captureScreenshot = async (): Promise<string | null> => {
+        if (!summaryRef.current) return null;
+        setIsCapturing(true);
+        try {
+            const canvas = await html2canvas(summaryRef.current, {
+                backgroundColor: isDark ? '#1a1a2e' : '#ffffff',
+                scale: 2,
+                useCORS: true,
+                ignoreElements: (element) => {
+                    // Ignore the share buttons container
+                    return element === shareButtonsRef.current;
+                },
+            });
+            return canvas.toDataURL('image/png');
+        } catch (err) {
+            console.error('Failed to capture screenshot:', err);
+            return null;
+        } finally {
+            setIsCapturing(false);
+        }
+    };
+
+    const handleDownload = async () => {
+        const dataUrl = await captureScreenshot();
+        if (!dataUrl) return;
+
+        const link = document.createElement('a');
+        link.download = `github-wrapped-${username || 'user'}-${selectedYear}.png`;
+        link.href = dataUrl;
+        link.click();
+    };
+
+    const handleShareTwitter = () => {
+        const text = `Check out my ${selectedYear} GitHub Wrapped! 🚀\n\n` +
+            `📊 ${stats.totalCommits.toLocaleString()} contributions\n` +
+            `🔥 ${stats.longestStreak} day streak\n` +
+            `📅 ${stats.activeDays} active days\n\n` +
+            `#GitHubWrapped #GitHub`;
+        const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+        window.open(url, '_blank');
+    };
 
     const statItems = [
         {
@@ -60,7 +107,7 @@ const YearInSummary: React.FC<YearInSummaryProps> = ({ stats, selectedYear }) =>
     ];
 
     return (
-        <div className="flex flex-col items-center justify-center text-center w-full max-w-lg mx-auto">
+        <div ref={summaryRef} className="flex flex-col items-center justify-center text-center w-full max-w-lg mx-auto p-4">
             <motion.div
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
@@ -107,7 +154,6 @@ const YearInSummary: React.FC<YearInSummaryProps> = ({ stats, selectedYear }) =>
             </motion.h2>
             <GHGraph />
 
-            {/* Stats Grid */}
             <motion.div
                 className="grid grid-cols-2 gap-4 w-full mt-6"
                 initial={{ opacity: 0 }}
@@ -147,16 +193,42 @@ const YearInSummary: React.FC<YearInSummaryProps> = ({ stats, selectedYear }) =>
                 ))}
             </motion.div>
 
-            {/* What a year message */}
             <motion.div
-                className="mt-8"
+                ref={shareButtonsRef}
+                className="mt-6"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.8 }}
             >
-                <p className={`text-lg font-medium ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
+                <p className={`text-lg font-medium mb-4 ${isDark ? 'text-gray-400' : 'text-gray-500'}`}>
                     What a year! 🚀
                 </p>
+
+                <div className="flex items-center justify-center gap-3">
+                    <motion.button
+                        onClick={handleDownload}
+                        disabled={isCapturing}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all ${isDark
+                            ? 'bg-white/10 hover:bg-white/20 text-white'
+                            : 'bg-gray-100 hover:bg-gray-200 text-gray-800'
+                            } ${isCapturing ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        whileHover={{ scale: isCapturing ? 1 : 1.05 }}
+                        whileTap={{ scale: isCapturing ? 1 : 0.95 }}
+                    >
+                        <FaDownload className="text-sm" />
+                        <span>Download</span>
+                    </motion.button>
+
+                    <motion.button
+                        onClick={handleShareTwitter}
+                        className={`flex items-center gap-2 px-4 py-2 rounded-xl font-medium transition-all bg-black text-white hover:bg-gray-800`}
+                        whileHover={{ scale: 1.05 }}
+                        whileTap={{ scale: 0.95 }}
+                    >
+                        <FaXTwitter className="text-sm" />
+                        <span>Share</span>
+                    </motion.button>
+                </div>
             </motion.div>
         </div>
     );
@@ -201,7 +273,7 @@ const GHGraph: React.FC<GHGraphProps> = () => {
 
     return (
         <motion.div
-            className="w-full mt-6 card bg-white/80 p-4 backdrop-blur-xl border border-gray-200 rounded-lg"
+            className="w-full mt-6 card bg-white/80 p-2 backdrop-blur-xl border border-gray-200 rounded-lg"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.8 }}
