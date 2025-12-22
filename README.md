@@ -1,5 +1,11 @@
 ### Github Freak
 
+#### New
+
+[Check out your Year in Github](https://github-freak.vercel.app/year/2025/)
+
+<img width="300px" src="yearInGithub.png" alt="Year in Github" />
+
 Project for Github Freaks to view their Github stats and details. This project is built using ReactJS, Tailwind CSS, and Github API.
 
 Sample screenshots of the project are shown below:
