@@ -24,12 +24,13 @@ interface YearInGithubState {
     // Navigation
     currentIndex: number;
     direction: 'forward' | 'backward';
-
+    username: string;
     // Stats data
     stats: YearStats;
     isLoading: boolean;
 
     // Actions
+    setUsername: (username: string) => void;
     next: () => void;
     previous: () => void;
     goToSlide: (index: number) => void;
@@ -60,6 +61,7 @@ const defaultStats: YearStats = {
 
 export const useYearInGithubStore = create<YearInGithubState>((set, get) => ({
     // Initial state
+    username: '',
     currentIndex: 0,
     direction: 'forward',
     stats: defaultStats,
@@ -106,6 +108,7 @@ export const useYearInGithubStore = create<YearInGithubState>((set, get) => ({
         stats: defaultStats,
         isLoading: false
     }),
+    setUsername: (username: string) => set({ username }),
 }));
 
 // Helper to get current stat type

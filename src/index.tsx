@@ -69,6 +69,10 @@ const router = createBrowserRouter([
         path: "/:username",
         element: <GHStats />,
       },
+      {
+        path: "/year/:year",
+        element: <YearInGithub />,
+      }
     ],
   },
 ]);
