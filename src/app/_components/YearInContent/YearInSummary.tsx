@@ -66,8 +66,8 @@ const YearInSummary: React.FC<YearInSummaryProps> = ({ stats, selectedYear }) =>
             `📅 ${stats.activeDays} active days\n\n` +
             `🪄 Top Language: ${stats.topLanguage}\n` +
             `⚡️ Most Active Day: ${stats.mostActiveDay}\n` +
-            ` 📊 Total PRs: ${stats.totalPRs}\n` +
-            `Get your own at: https://github-freak.vercel.app/year/${selectedYear}/` +
+            `📊 Total PRs: ${stats.totalPRs}\n` +
+            `Get your own at: https://github-freak.vercel.app/year/${selectedYear}/\n` +
             `#YearInGithub #GitHub`;
         const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
         window.open(url, '_blank');
