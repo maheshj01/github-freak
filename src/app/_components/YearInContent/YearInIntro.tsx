@@ -50,14 +50,15 @@ const YearInIntro: React.FC<YearInIntroProps> = ({ selectedYear, onStart }) => {
         setLoading(true);
 
         try {
-            // Fetch contributions and PR count in parallel
-            const [result, prCount] = await Promise.all([
+            // Fetch contributions, PR count, and top language in parallel
+            const [result, prCount, topLanguage] = await Promise.all([
                 fetchContributions(targetUsername, fromDate, toDate),
-                fetchPullRequests(targetUsername)
+                fetchPullRequests(targetUsername),
+                fetchMostActiveLanguage(targetUsername)
             ]);
 
             if (result.data && result.data.user) {
-                await analyzeData(result.data, prCount);
+                await analyzeData(result.data, prCount, topLanguage);
                 setGithubRawData(result.data);
                 // Don't reset loading here - let the transition happen with loading state
                 onStart();
@@ -93,7 +94,7 @@ const YearInIntro: React.FC<YearInIntroProps> = ({ selectedYear, onStart }) => {
         }
     };
 
-    const analyzeData = async (queryData: any, prCount: number = 0) => {
+    const analyzeData = async (queryData: any, prCount: number = 0, topLanguage: string = 'Unknown') => {
         if (!queryData?.user?.contributionsCollection?.contributionCalendar) return;
 
         const calendar = queryData.user.contributionsCollection.contributionCalendar;
@@ -138,12 +139,52 @@ const YearInIntro: React.FC<YearInIntroProps> = ({ selectedYear, onStart }) => {
             activeDays,
             longestStreak: maxStreak,
             mostActiveDay,
-            topLanguage: 'TypeScript', // Placeholder - would need separate query
+            topLanguage,
         });
 
-        console.log('Analyzed stats:', { totalContributions, prCount, activeDays, maxStreak, mostActiveDay });
+        console.log('Analyzed stats:', { totalContributions, prCount, activeDays, maxStreak, mostActiveDay, topLanguage });
     };
 
+    const fetchMostActiveLanguage = async (targetUsername: string): Promise<string> => {
+        try {
+            // Fetch user's recent repos (sorted by most recently pushed)
+            const response = await fetch(
+                `https://api.github.com/users/${targetUsername}/repos?sort=pushed&per_page=100`
+            );
+
+            if (!response.ok) {
+                console.error('Failed to fetch repos:', response.statusText);
+                return 'Unknown';
+            }
+
+            const repos = await response.json();
+
+            // Count languages across repos
+            const languageCounts: { [key: string]: number } = {};
+
+            for (const repo of repos) {
+                if (repo.language) {
+                    languageCounts[repo.language] = (languageCounts[repo.language] || 0) + 1;
+                }
+            }
+
+            // Find the most used language
+            let topLanguage = 'Unknown';
+            let maxCount = 0;
+
+            for (const [language, count] of Object.entries(languageCounts)) {
+                if (count > maxCount) {
+                    maxCount = count;
+                    topLanguage = language;
+                }
+            }
+
+            return topLanguage;
+        } catch (err) {
+            console.error('Error fetching languages:', err);
+            return 'Unknown';
+        }
+    };
     return (
         <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -168,8 +209,7 @@ const YearInIntro: React.FC<YearInIntroProps> = ({ selectedYear, onStart }) => {
                     }`}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.3 }}
-            >
+                transition={{ duration: 0.6, delay: 0.3 }}>
                 Year in GitHub
             </motion.h1>
 
