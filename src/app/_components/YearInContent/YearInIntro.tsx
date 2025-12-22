@@ -34,6 +34,54 @@ const YearInIntro: React.FC<YearInIntroProps> = ({ selectedYear, onStart }) => {
         handleStart();
     };
 
+    // Cache configuration
+    const CACHE_KEY_PREFIX = 'github_year_stats_';
+    const CACHE_EXPIRY_MS = 60 * 60 * 1000; // 1 hour
+
+    interface CachedData {
+        contributions: any;
+        prCount: number;
+        topLanguage: string;
+        timestamp: number;
+    }
+
+    const getCacheKey = (user: string, year: number) => `${CACHE_KEY_PREFIX}${user}_${year}`;
+
+    const getCachedData = (user: string, year: number): CachedData | null => {
+        try {
+            const cached = localStorage.getItem(getCacheKey(user, year));
+            if (!cached) return null;
+
+            const data: CachedData = JSON.parse(cached);
+            const now = Date.now();
+
+            // Check if cache is expired (1 hour)
+            if (now - data.timestamp > CACHE_EXPIRY_MS) {
+                localStorage.removeItem(getCacheKey(user, year));
+                return null;
+            }
+
+            return data;
+        } catch (err) {
+            console.error('Error reading cache:', err);
+            return null;
+        }
+    };
+
+    const setCachedData = (user: string, year: number, contributions: any, prCount: number, topLanguage: string) => {
+        try {
+            const data: CachedData = {
+                contributions,
+                prCount,
+                topLanguage,
+                timestamp: Date.now(),
+            };
+            localStorage.setItem(getCacheKey(user, year), JSON.stringify(data));
+        } catch (err) {
+            console.error('Error writing cache:', err);
+        }
+    };
+
     const handleStart = async () => {
         const targetUsername = username || inputUsername.trim();
         if (!targetUsername) return;
@@ -50,6 +98,15 @@ const YearInIntro: React.FC<YearInIntroProps> = ({ selectedYear, onStart }) => {
         setLoading(true);
 
         try {
+            const cached = getCachedData(targetUsername, selectedYear);
+
+            if (cached) {
+                await analyzeData(cached.contributions, cached.prCount, cached.topLanguage);
+                setGithubRawData(cached.contributions);
+                onStart();
+                return;
+            }
+
             // Fetch contributions, PR count, and top language in parallel
             const [result, prCount, topLanguage] = await Promise.all([
                 fetchContributions(targetUsername, fromDate, toDate),
@@ -58,6 +115,9 @@ const YearInIntro: React.FC<YearInIntroProps> = ({ selectedYear, onStart }) => {
             ]);
 
             if (result.data && result.data.user) {
+                // Cache the results
+                setCachedData(targetUsername, selectedYear, result.data, prCount, topLanguage);
+
                 await analyzeData(result.data, prCount, topLanguage);
                 setGithubRawData(result.data);
                 // Don't reset loading here - let the transition happen with loading state
@@ -142,7 +202,7 @@ const YearInIntro: React.FC<YearInIntroProps> = ({ selectedYear, onStart }) => {
             topLanguage,
         });
 
-        console.log('Analyzed stats:', { totalContributions, prCount, activeDays, maxStreak, mostActiveDay, topLanguage });
+        // console.log('Analyzed stats:', { totalContributions, prCount, activeDays, maxStreak, mostActiveDay, topLanguage });
     };
 
     const fetchMostActiveLanguage = async (targetUsername: string): Promise<string> => {
