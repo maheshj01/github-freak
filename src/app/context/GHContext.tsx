@@ -1,5 +1,4 @@
-import { useQuery } from '@apollo/client';
-import { gql } from '@apollo/client';
+import { gql, useLazyQuery, useQuery } from '@apollo/client';
 import React, { createContext, useContext, useState } from 'react';
 
 const GET_USER_DATA = gql`
@@ -39,6 +38,25 @@ export function useGitHubContributionsQuery(username: string, fromDate: Date, to
     },
     fetchPolicy: 'cache-and-network',
   });
+}
+
+// Lazy query - only fetches when execute function is called
+export function useLazyGitHubContributionsQuery() {
+  const [execute, { loading, error, data }] = useLazyQuery(GET_USER_DATA, {
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const fetchContributions = (username: string, fromDate: Date, toDate: Date) => {
+    return execute({
+      variables: {
+        login: username,
+        from: fromDate.toISOString(),
+        to: toDate.toISOString()
+      }
+    });
+  };
+
+  return { fetchContributions, loading, error, data };
 }
 
 
