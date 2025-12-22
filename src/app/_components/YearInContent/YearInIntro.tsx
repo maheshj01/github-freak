@@ -4,6 +4,7 @@ import { FaChevronRight, FaGithub, FaSpinner } from 'react-icons/fa';
 import { useTheme } from '../../context/AppThemeProvider';
 import { useLazyGitHubContributionsQuery } from '../../context/GHContext';
 import { useGitHubUser } from '../../hooks/GithubUser';
+import Analytics from '../../services/Analytics';
 import { useYearInGithubStore } from '../../store/yearInGithubStore';
 import AnimatedButton from '../AnimatedButton';
 
@@ -101,6 +102,7 @@ const YearInIntro: React.FC<YearInIntroProps> = ({ selectedYear, onStart }) => {
             const cached = getCachedData(targetUsername, selectedYear);
 
             if (cached) {
+                Analytics.logYearInGithubSearch(targetUsername, selectedYear);
                 await analyzeData(cached.contributions, cached.prCount, cached.topLanguage);
                 setGithubRawData(cached.contributions);
                 onStart();
@@ -117,6 +119,9 @@ const YearInIntro: React.FC<YearInIntroProps> = ({ selectedYear, onStart }) => {
             if (result.data && result.data.user) {
                 // Cache the results
                 setCachedData(targetUsername, selectedYear, result.data, prCount, topLanguage);
+
+                // Track analytics
+                Analytics.logYearInGithubSearch(targetUsername, selectedYear);
 
                 await analyzeData(result.data, prCount, topLanguage);
                 setGithubRawData(result.data);

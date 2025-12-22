@@ -4,6 +4,7 @@ import React, { useRef } from 'react';
 import { FaCalendarCheck, FaCode, FaCodeBranch, FaDownload, FaFire, FaGithub, FaLaptopCode, FaTrophy } from 'react-icons/fa';
 import { FaXTwitter } from 'react-icons/fa6';
 import { useTheme } from '../../context/AppThemeProvider';
+import Analytics from '../../services/Analytics';
 import { useYearInGithubStore, YearStats } from '../../store/yearInGithubStore';
 
 interface YearInSummaryProps {
@@ -46,6 +47,9 @@ const YearInSummary: React.FC<YearInSummaryProps> = ({ stats, selectedYear }) =>
         const dataUrl = await captureScreenshot();
         if (!dataUrl) return;
 
+        // Track download event
+        Analytics.logYearInGithubDownload(username || 'unknown', selectedYear);
+
         const link = document.createElement('a');
         link.download = `github-wrapped-${username || 'user'}-${selectedYear}.png`;
         link.href = dataUrl;
@@ -53,6 +57,9 @@ const YearInSummary: React.FC<YearInSummaryProps> = ({ stats, selectedYear }) =>
     };
 
     const handleShareTwitter = () => {
+        // Track share event
+        Analytics.logYearInGithubShare(username || 'unknown', selectedYear, 'twitter');
+
         const text = `Check out my ${selectedYear} GitHub Wrapped! 🚀\n\n` +
             `📊 ${stats.totalCommits.toLocaleString()} contributions\n` +
             `🔥 ${stats.longestStreak} day streak\n` +
