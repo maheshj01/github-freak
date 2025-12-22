@@ -1,6 +1,6 @@
 import { motion } from 'framer-motion';
 import React, { useEffect } from 'react';
-import { FaChevronRight, FaGithub } from 'react-icons/fa';
+import { FaChevronRight, FaGithub, FaSpinner } from 'react-icons/fa';
 import { useTheme } from '../../context/AppThemeProvider';
 import { useLazyGitHubContributionsQuery } from '../../context/GHContext';
 import { useGitHubUser } from '../../hooks/GithubUser';
@@ -15,9 +15,9 @@ interface YearInIntroProps {
 const YearInIntro: React.FC<YearInIntroProps> = ({ selectedYear, onStart }) => {
     const { theme } = useTheme();
     const isDark = theme.mode === 'dark';
-    const { username, setUsername, setStats, setLoading, setGithubRawData } = useYearInGithubStore();
+    const { username, setUsername, setStats, isLoading, setLoading, setGithubRawData } = useYearInGithubStore();
     const [inputUsername, setInputUsername] = React.useState('');
-    const { fetchContributions, loading, error, data } = useLazyGitHubContributionsQuery();
+    const { fetchContributions, error, data } = useLazyGitHubContributionsQuery();
     const { user, loading: userLoading, error: userError } = useGitHubUser(username);
     const fromDate = new Date(selectedYear, 0, 1);
     const toDate = new Date(selectedYear, 11, 31);
@@ -35,9 +35,11 @@ const YearInIntro: React.FC<YearInIntroProps> = ({ selectedYear, onStart }) => {
     };
 
     const handleStart = async () => {
-        console.log("start user:", user)
         const targetUsername = username || inputUsername.trim();
         if (!targetUsername) return;
+
+        // Prevent double-click while loading
+        if (isLoading) return;
 
         // Set username in store if not already set
         if (!username) {
@@ -57,11 +59,14 @@ const YearInIntro: React.FC<YearInIntroProps> = ({ selectedYear, onStart }) => {
             if (result.data && result.data.user) {
                 await analyzeData(result.data, prCount);
                 setGithubRawData(result.data);
+                // Don't reset loading here - let the transition happen with loading state
                 onStart();
+            } else {
+                // Only reset loading on failure/no data
+                setLoading(false);
             }
         } catch (err) {
             console.error('Error fetching contributions:', err);
-        } finally {
             setLoading(false);
         }
     };
@@ -224,19 +229,31 @@ const YearInIntro: React.FC<YearInIntroProps> = ({ selectedYear, onStart }) => {
                 transition={{ duration: 0.6, delay: username ? 0.9 : 1.0 }}
             >
                 {username ? (
-                    <AnimatedButton onClick={handleStart}>
+                    <AnimatedButton onClick={handleStart} disabled={isLoading}>
                         <div className='flex items-center justify-evenly min-w-32'>
-                            <div />
-                            <p>Start</p>
-                            <FaChevronRight />
+                            {isLoading ? (
+                                <FaSpinner className="animate-spin mx-12" />
+                            ) : (
+                                <>
+                                    <div />
+                                    <p>Start</p>
+                                    <FaChevronRight />
+                                </>
+                            )}
                         </div>
                     </AnimatedButton>
                 ) : (
-                    <AnimatedButton onClick={handleStart}>
+                    <AnimatedButton onClick={handleStart} disabled={isLoading || !inputUsername.trim()}>
                         <div className='flex items-center justify-evenly min-w-32'>
-                            <div />
-                            <p>Let's Go</p>
-                            <FaChevronRight />
+                            {isLoading ? (
+                                <FaSpinner className="animate-spin mx-12" />
+                            ) : (
+                                <>
+                                    <div />
+                                    <p>Let's Go</p>
+                                    <FaChevronRight />
+                                </>
+                            )}
                         </div>
                     </AnimatedButton>
                 )}

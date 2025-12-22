@@ -30,13 +30,16 @@ const YearInContent: React.FC<YearInContentProps> = ({ selectedYear }) => {
 
     return (
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
-            {/* Mobile tap zones - Instagram style */}
             {!isIntro && isMobile && (
                 <>
                     {/* Left tap zone - Previous */}
                     <div
                         className="absolute left-0 top-0 w-1/3 h-full z-20 cursor-pointer"
-                        onClick={previous}
+                        onClick={() => {
+                            if (currentIndex > 1) {
+                                previous();
+                            }
+                        }}
                         aria-label="Previous"
                     />
                     {/* Right tap zone - Next */}
@@ -91,28 +94,70 @@ const YearInContent: React.FC<YearInContentProps> = ({ selectedYear }) => {
     );
 };
 
-// Mobile progress bar (simplified dots at top)
-const MobileProgressBar: React.FC = () => {
-    const { currentIndex } = useYearInGithubStore();
-    const totalSlides = 7; // Excluding intro
+interface MobileProgressBarProps {
+    slideDuration?: number; // Duration in seconds, defaults to 5
+}
+
+const MobileProgressBar: React.FC<MobileProgressBarProps> = ({ slideDuration = 5 }) => {
+    const { currentIndex, next } = useYearInGithubStore();
+    const totalSlides = 7; // Excluding intro (indices 1-7 in store)
+    const slideIndex = currentIndex - 1; // Convert to 0-based for progress bar (0-6)
+    const [progress, setProgress] = React.useState(0);
+
+    // Auto-advance timer
+    React.useEffect(() => {
+        setProgress(0); // Reset progress when slide changes
+
+        const progressTimer = setInterval(() => {
+            setProgress(prev => {
+                const newProgress = prev + (100 / (slideDuration * 20)); // Update ~20 times per second
+                return newProgress >= 100 ? 100 : newProgress;
+            });
+        }, 50);
+
+        const slideTimer = setTimeout(() => {
+            if (currentIndex < totalSlides) {
+                next();
+            }
+        }, slideDuration * 1000);
+
+        return () => {
+            clearInterval(progressTimer);
+            clearTimeout(slideTimer);
+        };
+    }, [currentIndex, slideDuration, next, totalSlides]);
 
     return (
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="absolute top-4 left-0 right-0 flex justify-center gap-1 px-4 z-30"
+            className="absolute top-4 left-0 right-0 flex justify-center gap-1.5 px-4 z-30"
         >
-            {[...Array(totalSlides)].map((_, i) => (
-                <div
-                    key={i}
-                    className={`h-1 flex-1 max-w-8 rounded-full transition-all duration-300 ${i < currentIndex
-                        ? 'bg-white'
-                        : i === currentIndex
-                            ? 'bg-white/80'
-                            : 'bg-white/30'
-                        }`}
-                />
-            ))}
+            {[...Array(totalSlides)].map((_, i) => {
+                const isCompleted = i < slideIndex;
+                const isCurrent = i === slideIndex;
+                const isUpcoming = i > slideIndex;
+
+                return (
+                    <div
+                        key={i}
+                        className={`h-1 flex-1 rounded-full overflow-hidden ${isUpcoming ? 'bg-white/20' : 'bg-white/20'
+                            }`}
+                    >
+                        {/* Completed slides - full white */}
+                        {isCompleted && (
+                            <div className="h-full w-full bg-white" />
+                        )}
+                        {/* Current slide - animated fill */}
+                        {isCurrent && (
+                            <div
+                                className="h-full bg-white transition-none"
+                                style={{ width: `${progress}%` }}
+                            />
+                        )}
+                    </div>
+                );
+            })}
         </motion.div>
     );
 };

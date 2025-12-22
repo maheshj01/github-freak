@@ -52,7 +52,7 @@ const YearInProgress: React.FC<YearInProgressProps> = ({ onNext, onPrevious }) =
                             key={i}
                             className={`w-2 h-2 rounded-full transition-all duration-300 ${i === currentIndex - 1
                                 ? 'bg-black w-6'
-                                : 'bg-white/30'
+                                : 'bg-gray-300'
                                 }`}
                         />
                     ))}
