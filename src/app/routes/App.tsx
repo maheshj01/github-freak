@@ -1,11 +1,11 @@
-import { useEffect, useState } from 'react';
-import { FaGithub } from "react-icons/fa";
-import { Input } from '../_components/input';
-import React from 'react';
-import { useTheme } from '../context/AppThemeProvider';
 import { motion } from 'framer-motion';
-import Analytics from '../services/Analytics';
+import React, { useEffect, useState } from 'react';
+import { FaChevronRight, FaGithub } from "react-icons/fa";
+import AnimatedButton from '../_components/AnimatedButton';
+import { Input } from '../_components/input';
 import AutoscrollingTopRepos from '../_components/top-repositories';
+import { useTheme } from '../context/AppThemeProvider';
+import Analytics from '../services/Analytics';
 
 export default function App() {
   const [searchValue, setSearchValue] = React.useState('');
@@ -42,6 +42,9 @@ export default function App() {
     );
   };
 
+  const currentYear = new Date().getFullYear();
+  const isDark = theme.mode === 'dark';
+
   return (
     <div className={`min-h-screen bg-gradient ${theme.mode === 'dark' ? 'theme-aqua-dark' : 'theme-aqua-light'} z-50`}>
       <AutoscrollingTopRepos />
@@ -52,6 +55,7 @@ export default function App() {
           transition: { duration: 0.5 }
         }}
       >
+
         <form onSubmit={handleSubmit} className="w-full max-w-md px-4 mt-48">
           <motion.div
             animate={{ scale: hasSearched ? 0.9 : 1 }}
@@ -67,7 +71,28 @@ export default function App() {
             onChange={handleInputChange}
           />
         </form>
+        <div className="mt-12" />
+        {/* Year in GitHub CTA */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.7 }}
+          className="text-center"
+        >
+          <p className={`text-sm mb-4 ${isDark ? 'text-gray-400' : 'text-gray-600'}`}>
+            Check out your year in review
+          </p>
+
+          <AnimatedButton onClick={() => {
+            window.location.href = `/year/${currentYear}`;
+          }}>
+            <div className="flex items-center gap-2">
+              <span>Year in GitHub {currentYear}</span>
+              <FaChevronRight className="text-sm" />
+            </div>
+          </AnimatedButton>
+        </motion.div>
       </motion.div>
-    </div>
+    </div >
   );
 }
