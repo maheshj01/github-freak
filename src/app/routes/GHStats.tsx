@@ -46,7 +46,6 @@ export default function GHStats() {
     const [contributionStats, setContributionStats] = React.useState<GithubContribution | null>(null);
     const { user, error: userError } = useGitHubUser(searchUsername);
     const { loading, error, data } = useGitHubContributionsQuery(searchUsername, fromDate, toDate);
-    console.log(data)
     const navigate = useNavigate();
     const [tabValue, setTabValue] = useState<string>('stats');
     const numberOfYears = useAppSelector((state) => state.legend.numberOfYears) || 5;

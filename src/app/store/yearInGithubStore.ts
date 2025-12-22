@@ -20,6 +20,20 @@ export interface YearStats {
     topLanguage: string;
 }
 
+export interface GitHubUser {
+    login: string;
+    avatar_url: string;
+    name: string;
+    bio: string;
+    location: string;
+    blog: string;
+    twitter_username: string;
+    public_repos: number;
+    followers: number;
+    following: number;
+    created_at: string;
+}
+
 interface YearInGithubState {
     // Navigation
     currentIndex: number;
@@ -29,6 +43,7 @@ interface YearInGithubState {
     stats: YearStats;
     isLoading: boolean;
     githubRawData: any;
+    user: GitHubUser | null;
 
     // Actions
     setUsername: (username: string) => void;
@@ -39,6 +54,7 @@ interface YearInGithubState {
     setLoading: (loading: boolean) => void;
     reset: () => void;
     setGithubRawData: (data: any) => void;
+    setUser: (user: GitHubUser | null) => void;
 }
 
 const statOrder: YearStatType[] = [
@@ -69,6 +85,7 @@ export const useYearInGithubStore = create<YearInGithubState>((set, get) => ({
     stats: defaultStats,
     githubRawData: null,
     isLoading: false,
+    user: null,
 
     // Navigation actions
     next: () => {
@@ -112,9 +129,11 @@ export const useYearInGithubStore = create<YearInGithubState>((set, get) => ({
         isLoading: false,
         githubRawData: null,
         username: '',
+        user: null,
     }),
     setUsername: (username: string) => set({ username }),
     setGithubRawData: (data: any) => set({ githubRawData: data }),
+    setUser: (user: GitHubUser | null) => set({ user }),
 }));
 
 // Helper to get current stat type
