@@ -3,7 +3,6 @@ import React, { useEffect } from 'react';
 import { FaChevronRight, FaGithub, FaSpinner } from 'react-icons/fa';
 import { useTheme } from '../../context/AppThemeProvider';
 import { useLazyGitHubContributionsQuery } from '../../context/GHContext';
-import { useGitHubUser } from '../../hooks/GithubUser';
 import Analytics from '../../services/Analytics';
 import { useYearInGithubStore } from '../../store/yearInGithubStore';
 import AnimatedButton from '../AnimatedButton';
@@ -19,7 +18,6 @@ const YearInIntro: React.FC<YearInIntroProps> = ({ selectedYear, onStart }) => {
     const { username, setUsername, setStats, isLoading, setLoading, setGithubRawData } = useYearInGithubStore();
     const [inputUsername, setInputUsername] = React.useState('');
     const { fetchContributions, error, data } = useLazyGitHubContributionsQuery();
-    const { user, loading: userLoading, error: userError } = useGitHubUser(username);
     const fromDate = new Date(selectedYear, 0, 1);
     const toDate = new Date(selectedYear, 11, 31);
 

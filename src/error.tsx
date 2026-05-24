@@ -27,7 +27,7 @@ const ErrorRoute: React.FC<ErrorRouteProps> = ({ message }) => {
     const navigate = useNavigate();
     const error = useRouteError() as { statusText?: string; message?: string; status?: number };
 
-    const errorMessage = message || error?.statusText || error?.message || "Page not found";
+    // const errorMessage = message || error?.statusText || error?.message || "Page not found";
     const errorCode = error?.status || 404;
 
     return (
