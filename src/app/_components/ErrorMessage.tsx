@@ -1,6 +1,5 @@
-import React from 'react';
 import { motion } from 'framer-motion';
-import { FaExclamationCircle } from "react-icons/fa";
+import React from 'react';
 import { useTheme } from '../context/AppThemeProvider';
 
 interface ErrorMessageProps {

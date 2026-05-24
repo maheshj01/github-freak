@@ -45,14 +45,6 @@ const GHContribution: React.FC<GHContributionProps> = ({ username, data, loading
         );
     }
 
-    function Stats({ label, value }: { label: string; value: string | undefined }) {
-        return (
-            <p className={`hidden sm:block lg:text-md md:text-sm sm:text-xs ${darkMode ? 'text-gray-200' : 'text-gray-600'}`}>
-                {label}: {value}
-            </p>
-        );
-    }
-
     function MonthRow() {
         return (
             <div className='pl-2 flex gap-8 sm:gap-10 md:gap-10 lg:gap-8'>

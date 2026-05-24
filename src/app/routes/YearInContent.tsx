@@ -177,8 +177,4 @@ const YearInFooter: React.FC = () => {
     );
 };
 
-interface YearInIntroProps extends YearInContentProps {
-    onStart: () => void;
-}
-
 export default YearInContent;
