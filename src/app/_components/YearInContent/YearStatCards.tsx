@@ -1,6 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import React from 'react';
-import { useTheme } from '../../context/AppThemeProvider';
 import { getCurrentStatType, useYearInGithubStore, YearStats, YearStatType } from '../../store/yearInGithubStore';
 import YearInCommits from './YearInCommits';
 import YearInDays from './YearInDays';
@@ -41,9 +40,6 @@ export const StatCardWrapper: React.FC<{ children: React.ReactNode; icon: React.
     icon,
     gradient
 }) => {
-    const { theme } = useTheme();
-    const isDark = theme.mode === 'dark';
-
     return (
         <div className="flex flex-col items-center justify-center text-center">
             <motion.div

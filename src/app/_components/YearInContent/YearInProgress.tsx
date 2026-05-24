@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { getCurrentStatType, getTotalSlides, useYearInGithubStore } from "../../store/yearInGithubStore";
+import { getTotalSlides, useYearInGithubStore } from "../../store/yearInGithubStore";
 
 interface YearInProgressProps {
     onNext: () => void;
@@ -27,10 +27,8 @@ const NavigationButton: React.FC<{ onClick: () => void; disabled: boolean; icon:
 );
 
 const YearInProgress: React.FC<YearInProgressProps> = ({ onNext, onPrevious }) => {
-    const { currentIndex, next, previous, stats } = useYearInGithubStore();
-    const currentStatType = getCurrentStatType(currentIndex);
+    const { currentIndex, next } = useYearInGithubStore();
     const totalSlides = getTotalSlides();
-    const isIntro = currentStatType === 'intro';
     const isLast = currentIndex === totalSlides - 1;
     return (
         (

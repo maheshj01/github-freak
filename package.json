@@ -68,7 +68,7 @@
     ]
   },
   "engines": {
-    "node": "20.x"
+    "node": "24.x"
   },
   "devDependencies": {
     "@types/lodash": "^4.17.7"

@@ -1,8 +1,7 @@
+import { gql, useQuery } from '@apollo/client';
 import React, { useEffect } from 'react';
-import { useQuery } from '@apollo/client';
-import { gql } from '@apollo/client';
-import { useTheme } from '../context/AppThemeProvider';
 import { getCurrentDayOfYear } from '../../lib/utils';
+import { useTheme } from '../context/AppThemeProvider';
 import { useAppSelector } from '../hooks/Legend';
 
 const GET_USER_DATA = gql`

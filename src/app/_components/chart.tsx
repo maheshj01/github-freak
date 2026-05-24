@@ -1,13 +1,7 @@
 "use client"
 
-import * as React from "react"
-import * as RechartsPrimitive from "recharts"
-import {
-  NameType,
-  Payload,
-  ValueType,
-} from "recharts/types/component/DefaultTooltipContent"
-
+import * as React from "react";
+import * as RechartsPrimitive from "recharts";
 import { cn } from "../../lib/utils";
 
 // Format: { THEME_NAME: CSS_SELECTOR }
@@ -361,10 +355,9 @@ function getPayloadConfigFromPayload(
 }
 
 export {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  ChartLegend,
+  ChartContainer, ChartLegend,
   ChartLegendContent,
-  ChartStyle,
-}
+  ChartStyle, ChartTooltip,
+  ChartTooltipContent
+};
+

@@ -17,7 +17,7 @@ const YearInIntro: React.FC<YearInIntroProps> = ({ selectedYear, onStart }) => {
     const isDark = theme.mode === 'dark';
     const { username, setUsername, setStats, isLoading, setLoading, setGithubRawData } = useYearInGithubStore();
     const [inputUsername, setInputUsername] = React.useState('');
-    const { fetchContributions, error, data } = useLazyGitHubContributionsQuery();
+    const { fetchContributions, data } = useLazyGitHubContributionsQuery();
     const fromDate = new Date(selectedYear, 0, 1);
     const toDate = new Date(selectedYear, 11, 31);
 
