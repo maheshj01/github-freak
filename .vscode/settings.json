@@ -15,7 +15,9 @@
    },
    "editor.defaultFormatter": "esbenp.prettier-vscode",
    "typescript.tsserver.experimental.enableProjectDiagnostics": true,
-   "typescript.tsdk": "functions/node_modules/typescript/lib",
+   "typescript.tsdk": "node_modules/typescript/lib",
+   "eslint.lintTask.enable": true,
+   "eslint.lintTask.options": ".",
    "eslint.workingDirectories": [
       {
          "mode": "auto"

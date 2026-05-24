@@ -1,0 +1,28 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "ESLint: Lint Project",
+      "type": "shell",
+      "command": "npx eslint --ext .ts,.tsx src/",
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared"
+      },
+      "problemMatcher": {
+        "owner": "eslint",
+        "fileLocation": ["absolute"],
+        "pattern": {
+          "regexp": "^(.+):(\\d+):(\\d+):\\s+(warning|error)\\s+(.+)\\s{2}(.+)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "severity": 4,
+          "message": 5,
+          "code": 6
+        }
+      }
+    }
+  ]
+}
